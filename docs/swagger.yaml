@@ -44,21 +44,6 @@ paths:
                 $ref: "#/components/schemas/UserWithoutPass"
         '400':
           description: アカウント作成に失敗しました
-    delete:
-      tags:
-        - user
-      summary: アカウント削除
-      operationId: deleteUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-      responses:
-        '200':
-          description: アカウント削除に成功しました
-        '400':
-          description: アカウント削除に失敗しました
 
   /user/{uid}:
     patch:
@@ -88,6 +73,30 @@ paths:
                 $ref: "#/components/schemas/UserWithoutPass"
         '400':
           description: アカウント編集に失敗しました
+    delete:
+      tags:
+        - user
+      summary: アカウント削除
+      operationId: deleteUser
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ユーザーID
+          schema:
+            type: string
+            format: uuid
+        - name: password
+          in: query
+          required: true
+          description: パスワード
+          schema:
+            type: string
+      responses:
+        '200':
+          description: アカウント削除に成功しました
+        '400':
+          description: アカウント削除に失敗しました
 
   '/user/me':
     get:
