@@ -31,3 +31,28 @@ func (h *Handler) PostLogin(c echo.Context) error {
 
 	return c.NoContent(http.StatusOK)
 }
+
+func (h *Handler) EnsureAuthorized() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cookie, err := c.Cookie("session_id")
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			}
+
+			sess, err := h.si.CheckSession(cookie.Value)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			}
+			if sess != nil {
+				return onFailedError(c)
+			}
+
+			return next(c)
+		}
+	}
+}
+
+func onFailedError(c echo.Context) error {
+	return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+}

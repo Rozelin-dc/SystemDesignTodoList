@@ -1,6 +1,9 @@
 package infra
 
 import (
+	"database/sql"
+	"errors"
+
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
 	"github.com/google/uuid"
@@ -68,7 +71,7 @@ func (si *sessionInfra) DeleteSessionsByUserId(userId string) error {
 	return err
 }
 
-func (si *sessionInfra) CheckSession(sessionId string) error {
+func (si *sessionInfra) CheckSession(sessionId string) (*model.Session, error) {
 	sess := model.Session{}
 	err := si.db.Get(
 		&sess,
@@ -76,8 +79,12 @@ func (si *sessionInfra) CheckSession(sessionId string) error {
 		sessionId,
 	)
 	if err != nil {
-		return err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, err
 	}
 
-	return nil
+	return &sess, nil
 }

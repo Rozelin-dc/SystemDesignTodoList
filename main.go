@@ -19,23 +19,26 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
-	e.POST("/login", h.PostLogin)
+	e.POST("/api/login", h.PostLogin)
+	e.POST("/api/logout", h.NotImpl)
 
-	apiUser := e.Group("/user")
+	api := e.Group("/api", h.EnsureAuthorized())
 	{
-		apiUser.POST("", h.NotImpl)
-		apiUser.DELETE("", h.NotImpl)
-		apiUser.PATCH("/:uid", h.NotImpl)
-		apiUser.GET("/me", h.NotImpl)
-	}
+		apiUser := api.Group("/user")
+		{
+			apiUser.POST("", h.NotImpl)
+			apiUser.DELETE("", h.NotImpl)
+			apiUser.PATCH("/:uid", h.NotImpl)
+			apiUser.GET("/me", h.NotImpl)
+		}
 
-	apiTask := e.Group("/task")
-	{
-		apiTask.POST("", h.NotImpl)
-		apiTask.PATCH("/:tid", h.NotImpl)
-		apiTask.DELETE("/:tid", h.NotImpl)
+		apiTask := api.Group("/task")
+		{
+			apiTask.POST("", h.NotImpl)
+			apiTask.PATCH("/:tid", h.NotImpl)
+			apiTask.DELETE("/:tid", h.NotImpl)
+		}
 	}
-
 	if err := e.Start(":80"); err != nil {
 		panic(err)
 	}
