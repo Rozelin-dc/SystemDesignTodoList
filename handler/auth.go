@@ -49,17 +49,33 @@ func (h *Handler) PostLogout(c echo.Context) error {
 func (h *Handler) EnsureAuthorized() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cookie, err := c.Cookie("session_id")
+			sess := &model.Session{}
+			err := pickSession(c, h, sess)
 			if err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+				return err
 			}
 
-			sess, err := h.si.CheckSession(cookie.Value)
+			return next(c)
+		}
+	}
+}
+
+func (h *Handler) EnsureAccessRightToAccount() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			sess := &model.Session{}
+			err := pickSession(c, h, sess)
 			if err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+				return err
 			}
-			if sess != nil {
-				return onFailedError(c)
+
+			uid := c.Param("uid")
+			if uid == "" {
+				return echo.NewHTTPError(http.StatusBadRequest, "`uid` is required")
+			}
+
+			if uid != sess.UserId {
+				return echo.NewHTTPError(http.StatusForbidden, "cannot access other's account")
 			}
 
 			return next(c)

@@ -28,9 +28,13 @@ func main() {
 		apiUser := api.Group("/user")
 		{
 			apiUser.POST("", h.NotImpl)
-			apiUser.DELETE("", h.NotImpl)
-			apiUser.PATCH("/:uid", h.NotImpl)
 			apiUser.GET("/me", h.NotImpl)
+
+			apiUserId := apiUser.Group("/:uid", h.EnsureAccessRightToAccount())
+			{
+				apiUserId.DELETE("", h.NotImpl)
+				apiUserId.PATCH("", h.NotImpl)
+			}
 		}
 
 		apiTask := api.Group("/task")
