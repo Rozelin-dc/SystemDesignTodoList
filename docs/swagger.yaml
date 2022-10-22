@@ -44,25 +44,6 @@ paths:
                 $ref: "#/components/schemas/UserWithoutPass"
         '400':
           description: アカウント作成に失敗しました
-    patch:
-      tags:
-        - user
-      summary: アカウント情報編集
-      operationId: patchUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateUser"
-      responses:
-        '201':
-          description: 編集されたアカウント
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserWithoutPass"
-        '400':
-          description: アカウント編集に失敗しました
     delete:
       tags:
         - user
@@ -78,6 +59,35 @@ paths:
           description: アカウント削除に成功しました
         '400':
           description: アカウント削除に失敗しました
+
+  /user/{uid}:
+    patch:
+      tags:
+        - user
+      summary: アカウント情報編集
+      operationId: patchUser
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ユーザーID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUser"
+      responses:
+        '201':
+          description: 編集されたアカウント
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
+        '400':
+          description: アカウント編集に失敗しました
 
   '/user/me':
     get:
@@ -140,16 +150,26 @@ paths:
                 $ref: "#/components/schemas/Task"
         '401':
           description: タスク作成に失敗しました
+
+  /task/{tid}:
     patch:
       tags:
         - task
       summary: タスク編集
       operationId: patchTask
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: タスクID
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Task"
+              $ref: "#/components/schemas/UpdateTask"
       responses:
         '201':
           description: 編集されたタスク
@@ -166,7 +186,7 @@ paths:
       operationId: deleteTask
       parameters:
         - name: taskId
-          in: query
+          in: path
           description: 削除するタスクのID
           schema:
             type: string
@@ -177,7 +197,6 @@ paths:
           description: タスク削除に成功しました
         '404':
           description: 存在しないタスクです
-
 
 components:
   schemas:
@@ -210,9 +229,6 @@ components:
     UpdateUser:
       type: object
       properties:
-        userId:
-          type: string
-          format: uuid
         userName:
           type: string
           example: testUserName
@@ -223,9 +239,9 @@ components:
           type: string
           example: "********"
       required:
-        - userId
         - userName
         - password
+        - newPassword
 
     User:
       type: object
@@ -247,6 +263,19 @@ components:
     NewTask:
       type: string
       example: サンプルタスク
+
+    UpdateTask:
+      type: object
+      properties:
+        taskName:
+          type: string
+          example: sampleTaskName
+        status:
+          type: number
+          example: 1
+      required:
+        - taskName
+        - status
 
     Task:
       type: object
