@@ -1,0 +1,262 @@
+openapi: 3.0.3
+
+info:
+  title: todolist
+  version: 0.0.1
+  description:  todolist API
+
+servers:
+  - url: localhost:6000
+
+paths:
+  '/login':
+    post:
+      summary: ログイン
+      operationId: postLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSimple"
+      responses:
+        '200':
+          description: ログインに成功しました
+        '401':
+          description: ログインに失敗しました
+
+  '/user':
+    post:
+      tags:
+        - user
+      summary: アカウント作成
+      operationId: postUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSimple"
+      responses:
+        '201':
+          description: 作成されたアカウント
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
+        '400':
+          description: アカウント作成に失敗しました
+    patch:
+      tags:
+        - user
+      summary: アカウント情報編集
+      operationId: patchUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUser"
+      responses:
+        '201':
+          description: 編集されたアカウント
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
+        '400':
+          description: アカウント編集に失敗しました
+    delete:
+      tags:
+        - user
+      summary: アカウント削除
+      operationId: deleteUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: アカウント削除に成功しました
+        '400':
+          description: アカウント削除に失敗しました
+
+  '/task':
+    get:
+      tags:
+        - task
+      summary: 自分のタスク一覧を取得します
+      operationId: getTasks
+      parameters:
+        - name: limit
+          in: query
+          description: 取得するタスクの最大数
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          description: 何件目のタスクから取得するか
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '201':
+          description: 取得できたタスク
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskList"
+        '401':
+          description: タスク取得に失敗しました
+    post:
+      tags:
+        - task
+      summary: タスク作成
+      operationId: createTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewTask"
+      responses:
+        '201':
+          description: 作成されたタスク
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        '401':
+          description: タスク作成に失敗しました
+    patch:
+      tags:
+        - task
+      summary: タスク編集
+      operationId: patchTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        '201':
+          description: 編集されたタスク
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        '401':
+          description: タスク編集に失敗しました
+    delete:
+      tags:
+        - task
+      summary: タスク削除
+      operationId: deleteTask
+      parameters:
+        - name: taskId
+          in: query
+          description: 削除するタスクのID
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: タスク削除に成功しました
+        '404':
+          description: 存在しないタスクです
+
+
+components:
+  schemas:
+    UserSimple:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: testUserName
+        password:
+          type: string
+          example: "********"
+      required:
+        - userName
+        - password
+
+    UserWithoutPass:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        userName:
+          type: string
+          example: testUserName
+      required:
+        - userId
+        - userName
+
+    UpdateUser:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        userName:
+          type: string
+          example: testUserName
+        password:
+          type: string
+          example: "********"
+        newPassword:
+          type: string
+          example: "********"
+      required:
+        - userId
+        - userName
+        - password
+
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        userName:
+          type: string
+          example: testUserName
+        password:
+          type: string
+          example: "********"
+      required:
+        - userId
+        - userName
+        - password
+
+    NewTask:
+      type: string
+      example: サンプルタスク
+
+    Task:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: uuid
+        taskName:
+          type: string
+          example: sampleTaskName
+        status:
+          type: number
+          example: 1
+      required:
+        - taskId
+        - taskName
+        - status
+
+    TaskList:
+      type: object
+      properties:
+        hasNext:
+          type: boolean
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
