@@ -13,13 +13,15 @@ CREATE TABLE `tasks` (
   `task_id` VARCHAR(32) NOT NULL,
   `creator_id` VARCHAR(32) NOT NULL,
   `task_name` VARCHAR(32) NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `status` SMALLINT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` SMALLINT DEFAULT 0,
+  `time_limit` TIMESTAMP DEFAULT NULL,
   PRIMARY KEY (`task_id`)
 );
 
-DROP TABLE IF EXISTS `user_sessions`;
-CREATE TABLE `user_sessions` (
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE `sessions` (
   `session_id` VARCHAR(32) NOT NULL,
   `user_id` VARCHAR(32) NOT NULL,
   PRIMARY KEY (`session_id`)

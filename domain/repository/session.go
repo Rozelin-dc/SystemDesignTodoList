@@ -4,7 +4,7 @@ import "github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 
 type SessionRepository interface {
 	CreateSession(userId string) (*model.Session, error)
-	DeleteSessionBySessionId(sessionId string) error
-	DeleteSessionByUserId(userId string) error
-	IsValidSession(session *model.Session) bool
+	DeleteSessionsBySessionId(sessionId string) error
+	DeleteSessionsByUserId(userId string) error
+	IsValidSession(session *model.Session) (bool, error)
 }

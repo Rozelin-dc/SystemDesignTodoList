@@ -270,8 +270,16 @@ components:
         - password
 
     NewTask:
-      type: string
-      example: サンプルタスク
+      type: object
+      properties:
+        taskName:
+          type: string
+          example: サンプルタスク
+        timeLimit:
+          type: string
+          format: date-time
+      required:
+        - taskName
 
     UpdateTask:
       type: object
@@ -282,6 +290,9 @@ components:
         status:
           type: number
           example: 1
+        timeLimit:
+          type: string
+          format: date-time
       required:
         - taskName
         - status
@@ -298,6 +309,9 @@ components:
         status:
           type: number
           example: 1
+        timeLimit:
+          type: string
+          format: date-time
       required:
         - taskId
         - taskName
