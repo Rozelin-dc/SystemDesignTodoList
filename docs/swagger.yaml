@@ -79,6 +79,20 @@ paths:
         '400':
           description: アカウント削除に失敗しました
 
+  '/user/me':
+    get:
+      tags:
+        - user
+      summary: 自分のユーザー情報を取得
+      operationId: getUserMe
+      responses:
+        '201':
+          description: アカウント情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
+
   '/task':
     get:
       tags:
