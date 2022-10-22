@@ -1,9 +1,6 @@
 package infra
 
 import (
-	"database/sql"
-	"errors"
-
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -40,6 +37,20 @@ func (si *SessionInfra) CreateSession(userId string) (*model.Session, error) {
 	}, nil
 }
 
+func (si *SessionInfra) GetSession(sessionId string) (*model.Session, error) {
+	sess := model.Session{}
+	err := si.DB.Get(
+		&sess,
+		"SELECT * FROM `sessions` WHERE `session_id` = ?",
+		sessionId,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &sess, nil
+}
+
 func (si *SessionInfra) DeleteSessionsBySessionId(sessionId string) error {
 	_, err := si.DB.Exec(
 		"DELETE FROM `sessions` WHERE `session_id` = ?",
@@ -56,20 +67,16 @@ func (si *SessionInfra) DeleteSessionsByUserId(userId string) error {
 	return err
 }
 
-func (si *SessionInfra) IsValidSession(session *model.Session) (bool, error) {
+func (si *SessionInfra) CheckSession(sessionId string) error {
 	sess := model.Session{}
 	err := si.DB.Get(
 		&sess,
-		"SELECT * FROM `sessions` WHERE `session_id` = ?, `user_id` = ?",
-		session.SessionId,
-		session.UserId,
+		"SELECT * FROM `sessions` WHERE `session_id` = ?",
+		sessionId,
 	)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return false, nil
-		}
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

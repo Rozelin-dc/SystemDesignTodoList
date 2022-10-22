@@ -45,6 +45,20 @@ func (ui *UserInfra) CreateUser(user *model.UserSimple) (*model.UserWithoutPass,
 	}, nil
 }
 
+func (ui *UserInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
+	user := model.UserWithoutPass{}
+	err := ui.DB.Get(
+		&user,
+		"SELECT `user_id`, `user_name` FROM `users` WHERE `user_id` = ?",
+		userId,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (ui *UserInfra) EditUser(user *model.UserUpdate) (*model.UserWithoutPass, error) {
 	updatedUser := model.User{}
 	err := ui.DB.Get(
@@ -104,4 +118,26 @@ func (ui *UserInfra) DeleteUser(user *model.UserDelete) error {
 	)
 
 	return err
+}
+
+func (ui *UserInfra) CheckRightUser(user *model.UserSimple) (*model.UserWithoutPass, error) {
+	u := model.User{}
+	err := ui.DB.Get(
+		&u,
+		"SELECT * FROM `users` WHERE `user_id` = ?",
+		user.UserName,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(user.Password))
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.UserWithoutPass{
+		UserId:   u.UserId,
+		UserName: u.UserName,
+	}, nil
 }
