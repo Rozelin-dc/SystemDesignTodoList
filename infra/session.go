@@ -55,7 +55,7 @@ func (si *sessionInfra) GetSession(sessionId string) (*model.Session, error) {
 	return &sess, nil
 }
 
-func (si *sessionInfra) DeleteSessionsBySessionId(sessionId string) error {
+func (si *sessionInfra) DeleteSessionBySessionId(sessionId string) error {
 	_, err := si.db.Exec(
 		"DELETE FROM `sessions` WHERE `session_id` = ?",
 		sessionId,

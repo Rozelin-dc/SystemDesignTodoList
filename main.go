@@ -20,10 +20,11 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	e.POST("/api/login", h.PostLogin)
-	e.POST("/api/logout", h.NotImpl)
 
 	api := e.Group("/api", h.EnsureAuthorized())
 	{
+		api.POST("/logout", h.PostLogout)
+
 		apiUser := api.Group("/user")
 		{
 			apiUser.POST("", h.NotImpl)
