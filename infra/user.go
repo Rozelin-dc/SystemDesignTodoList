@@ -2,20 +2,21 @@ package infra
 
 import (
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
+	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserInfra struct {
-	DB *sqlx.DB
+type userInfra struct {
+	db *sqlx.DB
 }
 
-func NewUserInfra(db *sqlx.DB) *UserInfra {
-	return &UserInfra{DB: db}
+func NewUserInfra(db *sqlx.DB) repository.UserRepository {
+	return &userInfra{db: db}
 }
 
-func (ui *UserInfra) CreateUser(user *model.UserSimple) (*model.UserWithoutPass, error) {
+func (ui *userInfra) CreateUser(user *model.UserSimple) (*model.UserWithoutPass, error) {
 	pass := []byte(user.Password)
 	hashed, err := bcrypt.GenerateFromPassword(pass, 10)
 	if err != nil {
@@ -29,7 +30,7 @@ func (ui *UserInfra) CreateUser(user *model.UserSimple) (*model.UserWithoutPass,
 
 	uuidStr := uu.String()
 
-	_, err = ui.DB.Exec(
+	_, err = ui.db.Exec(
 		"INSERT INTO `users` (`user_id`, `user_name`, `password`) VALUES (?, ?, ?)",
 		uuidStr,
 		user.UserName,
@@ -45,9 +46,9 @@ func (ui *UserInfra) CreateUser(user *model.UserSimple) (*model.UserWithoutPass,
 	}, nil
 }
 
-func (ui *UserInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
+func (ui *userInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
 	user := model.UserWithoutPass{}
-	err := ui.DB.Get(
+	err := ui.db.Get(
 		&user,
 		"SELECT `user_id`, `user_name` FROM `users` WHERE `user_id` = ?",
 		userId,
@@ -59,9 +60,9 @@ func (ui *UserInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
 	return &user, nil
 }
 
-func (ui *UserInfra) EditUser(user *model.UserUpdate) (*model.UserWithoutPass, error) {
+func (ui *userInfra) EditUser(user *model.UserUpdate) (*model.UserWithoutPass, error) {
 	updatedUser := model.User{}
-	err := ui.DB.Get(
+	err := ui.db.Get(
 		&updatedUser,
 		"SELECT * FROM `users` WHERE `user_id` = ?",
 		user.UserId,
@@ -80,7 +81,7 @@ func (ui *UserInfra) EditUser(user *model.UserUpdate) (*model.UserWithoutPass, e
 		return nil, err
 	}
 
-	_, err = ui.DB.Exec(
+	_, err = ui.db.Exec(
 		"UPDATE `users` SET `user_name` = ?, `password` = ? WHERE `user_id` = ?",
 		user.UserName,
 		string(hashed),
@@ -96,9 +97,9 @@ func (ui *UserInfra) EditUser(user *model.UserUpdate) (*model.UserWithoutPass, e
 	}, nil
 }
 
-func (ui *UserInfra) DeleteUser(user *model.UserDelete) error {
+func (ui *userInfra) DeleteUser(user *model.UserDelete) error {
 	deletedUser := model.User{}
-	err := ui.DB.Get(
+	err := ui.db.Get(
 		&deletedUser,
 		"SELECT * FROM `users` WHERE `user_id` = ?",
 		user.UserId,
@@ -112,7 +113,7 @@ func (ui *UserInfra) DeleteUser(user *model.UserDelete) error {
 		return err
 	}
 
-	_, err = ui.DB.Exec(
+	_, err = ui.db.Exec(
 		"DELETE FROM `users` WHERE `user_id` = ?",
 		user.UserId,
 	)
@@ -120,9 +121,9 @@ func (ui *UserInfra) DeleteUser(user *model.UserDelete) error {
 	return err
 }
 
-func (ui *UserInfra) CheckRightUser(user *model.UserSimple) (*model.UserWithoutPass, error) {
+func (ui *userInfra) CheckRightUser(user *model.UserSimple) (*model.UserWithoutPass, error) {
 	u := model.User{}
-	err := ui.DB.Get(
+	err := ui.db.Get(
 		&u,
 		"SELECT * FROM `users` WHERE `user_id` = ?",
 		user.UserName,

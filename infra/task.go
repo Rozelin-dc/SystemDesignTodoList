@@ -2,21 +2,22 @@ package infra
 
 import (
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
+	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
-type TaskInfra struct {
-	DB *sqlx.DB
+type taskInfra struct {
+	db *sqlx.DB
 }
 
-func NewTaskInfra(db *sqlx.DB) *TaskInfra {
-	return &TaskInfra{DB: db}
+func NewTaskInfra(db *sqlx.DB) repository.TaskRepository {
+	return &taskInfra{db: db}
 }
 
-func (ti *TaskInfra) GetAllTasksByCreatorId(creatorId string) ([]*model.TaskSimple, error) {
+func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string) ([]*model.TaskSimple, error) {
 	tasks := []*model.TaskSimple{}
-	err := ti.DB.Select(
+	err := ti.db.Select(
 		&tasks,
 		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ?",
 		creatorId,
@@ -28,7 +29,7 @@ func (ti *TaskInfra) GetAllTasksByCreatorId(creatorId string) ([]*model.TaskSimp
 	return tasks, nil
 }
 
-func (ti *TaskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.TaskSimple, error) {
+func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.TaskSimple, error) {
 	uu, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -37,7 +38,7 @@ func (ti *TaskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 	uuidStr := uu.String()
 
 	if task.TimeLimit != nil {
-		_, err = ti.DB.Exec(
+		_, err = ti.db.Exec(
 			"INSERT INTO `tasks` (`task_id`, `creator_id`, `task_name`, `time_limit`) VALUES (?, ?, ?, ?)",
 			uuidStr,
 			creatorId,
@@ -48,7 +49,7 @@ func (ti *TaskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 			return nil, err
 		}
 	} else {
-		_, err = ti.DB.Exec(
+		_, err = ti.db.Exec(
 			"INSERT INTO `tasks` (`task_id`, `creator_id`, `task_name`) VALUES (?, ?, ?)",
 			uuidStr,
 			creatorId,
@@ -67,9 +68,9 @@ func (ti *TaskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 	}, nil
 }
 
-func (ti *TaskInfra) EditTask(task *model.TaskSimple) (*model.TaskSimple, error) {
+func (ti *taskInfra) EditTask(task *model.TaskSimple) (*model.TaskSimple, error) {
 	if task.TimeLimit != nil {
-		_, err := ti.DB.Exec(
+		_, err := ti.db.Exec(
 			"UPDATE `tasks` SET `task_name` = ?, `status` = ?, `time_limit` = ? WHERE `task_id` = ?",
 			task.TaskName,
 			task.Status,
@@ -80,7 +81,7 @@ func (ti *TaskInfra) EditTask(task *model.TaskSimple) (*model.TaskSimple, error)
 			return nil, err
 		}
 	} else {
-		_, err := ti.DB.Exec(
+		_, err := ti.db.Exec(
 			"UPDATE `tasks` SET `task_name` = ?, `status` = ? WHERE `task_id` = ?",
 			task.TaskName,
 			task.Status,
@@ -94,8 +95,8 @@ func (ti *TaskInfra) EditTask(task *model.TaskSimple) (*model.TaskSimple, error)
 	return task, nil
 }
 
-func (ti *TaskInfra) DeleteTask(taskId string, userId string) error {
-	_, err := ti.DB.Exec(
+func (ti *taskInfra) DeleteTask(taskId string, userId string) error {
+	_, err := ti.db.Exec(
 		"DELETE FROM `tasks` WHERE `task_id` = ? AND `creator_id` = ?",
 		taskId,
 		userId,

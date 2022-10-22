@@ -2,19 +2,20 @@ package infra
 
 import (
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
+	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
-type SessionInfra struct {
-	DB *sqlx.DB
+type sessionInfra struct {
+	db *sqlx.DB
 }
 
-func NewSessionInfra(db *sqlx.DB) *SessionInfra {
-	return &SessionInfra{DB: db}
+func NewSessionInfra(db *sqlx.DB) repository.SessionRepository {
+	return &sessionInfra{db: db}
 }
 
-func (si *SessionInfra) CreateSession(userId string) (*model.Session, error) {
+func (si *sessionInfra) CreateSession(userId string) (*model.Session, error) {
 	uu, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -22,7 +23,7 @@ func (si *SessionInfra) CreateSession(userId string) (*model.Session, error) {
 
 	uuidStr := uu.String()
 
-	_, err = si.DB.Exec(
+	_, err = si.db.Exec(
 		"INSERT INTO `sessions` (`session_id`, `user_id`) VALUES (?, ?)",
 		uuidStr,
 		userId,
@@ -37,9 +38,9 @@ func (si *SessionInfra) CreateSession(userId string) (*model.Session, error) {
 	}, nil
 }
 
-func (si *SessionInfra) GetSession(sessionId string) (*model.Session, error) {
+func (si *sessionInfra) GetSession(sessionId string) (*model.Session, error) {
 	sess := model.Session{}
-	err := si.DB.Get(
+	err := si.db.Get(
 		&sess,
 		"SELECT * FROM `sessions` WHERE `session_id` = ?",
 		sessionId,
@@ -51,25 +52,25 @@ func (si *SessionInfra) GetSession(sessionId string) (*model.Session, error) {
 	return &sess, nil
 }
 
-func (si *SessionInfra) DeleteSessionsBySessionId(sessionId string) error {
-	_, err := si.DB.Exec(
+func (si *sessionInfra) DeleteSessionsBySessionId(sessionId string) error {
+	_, err := si.db.Exec(
 		"DELETE FROM `sessions` WHERE `session_id` = ?",
 		sessionId,
 	)
 	return err
 }
 
-func (si *SessionInfra) DeleteSessionsByUserId(userId string) error {
-	_, err := si.DB.Exec(
+func (si *sessionInfra) DeleteSessionsByUserId(userId string) error {
+	_, err := si.db.Exec(
 		"DELETE FROM `sessions` WHERE `user_id` = ?",
 		userId,
 	)
 	return err
 }
 
-func (si *SessionInfra) CheckSession(sessionId string) error {
+func (si *sessionInfra) CheckSession(sessionId string) error {
 	sess := model.Session{}
-	err := si.DB.Get(
+	err := si.db.Get(
 		&sess,
 		"SELECT * FROM `sessions` WHERE `session_id` = ?",
 		sessionId,
