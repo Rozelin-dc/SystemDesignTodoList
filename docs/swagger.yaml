@@ -21,8 +21,16 @@ paths:
       responses:
         '200':
           description: ログインに成功しました
-        '401':
+        '400':
           description: ログインに失敗しました
+
+  '/logout':
+    post:
+      summary: ログアウト
+      operationId: postLogout
+      responses:
+        '200':
+          description: ログアウトに成功しました
 
   '/user':
     post:
