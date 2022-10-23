@@ -21,6 +21,7 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	e.POST("/api/login", h.PostLogin)
+	e.POST("/api/user", h.PostUser)
 
 	api := e.Group("/api", mid.EnsureAuthorized(h))
 	{
@@ -28,13 +29,12 @@ func main() {
 
 		apiUser := api.Group("/user")
 		{
-			apiUser.POST("", h.NotImpl)
-			apiUser.GET("/me", h.NotImpl)
+			apiUser.GET("/me", h.GetUserMe)
 
 			apiUserId := apiUser.Group("/:uid", mid.EnsureAccessRightToAccount(h))
 			{
-				apiUserId.DELETE("", h.NotImpl)
-				apiUserId.PATCH("", h.NotImpl)
+				apiUserId.PATCH("", h.PatchUser)
+				apiUserId.DELETE("", h.DeleteUser)
 			}
 		}
 

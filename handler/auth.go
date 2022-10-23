@@ -19,15 +19,10 @@ func (h *Handler) PostLogin(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	sess, err := h.si.CreateSession(user.UserId)
+	err = createSessionAndSetCookie(c, h, user.UserId)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return err
 	}
-
-	c.SetCookie(&http.Cookie{
-		Name:  "session_id",
-		Value: sess.SessionId,
-	})
 
 	return c.NoContent(http.StatusOK)
 }
