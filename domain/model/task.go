@@ -9,6 +9,17 @@ type TaskSimple struct {
 	TimeLimit *time.Time `json:"timeLimit" db:"time_limit"`
 }
 
+type TaskList struct {
+	HasNext bool           `json:"hasNext"`
+	Tasks   *[]*TaskSimple `json:"tasks"`
+}
+
+type TaskUpdate struct {
+	TaskName  string     `json:"taskName" db:"task_name"`
+	Status    int        `json:"status" db:"status"`
+	TimeLimit *time.Time `json:"timeLimit" db:"time_limit"`
+}
+
 type NewTask struct {
 	TaskName  string     `json:"taskName" db:"task_name"`
 	TimeLimit *time.Time `json:"timeLimit" db:"time_limit"`

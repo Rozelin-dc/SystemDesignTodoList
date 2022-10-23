@@ -40,12 +40,13 @@ func main() {
 
 		apiTask := api.Group("/task")
 		{
-			apiTask.POST("", h.NotImpl)
+			apiTask.POST("", h.PostTask)
+			apiTask.GET("", h.GetTasks)
 
 			apiTaskId := apiTask.Group("/:tid", mid.EnsureExistTaskAndHaveAccessRight(h))
 			{
-				apiTaskId.PATCH("/:tid", h.NotImpl)
-				apiTaskId.DELETE("/:tid", h.NotImpl)
+				apiTaskId.PATCH("/:tid", h.PatchTask)
+				apiTaskId.DELETE("/:tid", h.DeleteTask)
 			}
 		}
 	}
