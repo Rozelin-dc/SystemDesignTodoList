@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
+	mid "github.com/Rozelin-dc/SystemDesignTodoList/middleware"
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo-contrib/session"
@@ -21,7 +22,7 @@ func main() {
 
 	e.POST("/api/login", h.PostLogin)
 
-	api := e.Group("/api", h.EnsureAuthorized())
+	api := e.Group("/api", mid.EnsureAuthorized(h))
 	{
 		api.POST("/logout", h.PostLogout)
 
@@ -30,7 +31,7 @@ func main() {
 			apiUser.POST("", h.NotImpl)
 			apiUser.GET("/me", h.NotImpl)
 
-			apiUserId := apiUser.Group("/:uid", h.EnsureAccessRightToAccount())
+			apiUserId := apiUser.Group("/:uid", mid.EnsureAccessRightToAccount(h))
 			{
 				apiUserId.DELETE("", h.NotImpl)
 				apiUserId.PATCH("", h.NotImpl)
@@ -40,8 +41,12 @@ func main() {
 		apiTask := api.Group("/task")
 		{
 			apiTask.POST("", h.NotImpl)
-			apiTask.PATCH("/:tid", h.NotImpl)
-			apiTask.DELETE("/:tid", h.NotImpl)
+
+			apiTaskId := apiTask.Group("/:tid", mid.EnsureExistTaskAndHaveAccessRight(h))
+			{
+				apiTaskId.PATCH("/:tid", h.NotImpl)
+				apiTaskId.DELETE("/:tid", h.NotImpl)
+			}
 		}
 	}
 	if err := e.Start(":80"); err != nil {

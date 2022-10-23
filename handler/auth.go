@@ -46,43 +46,19 @@ func (h *Handler) PostLogout(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *Handler) EnsureAuthorized() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			sess := &model.Session{}
-			err := pickSession(c, h, sess)
-			if err != nil {
-				return err
-			}
-
-			return next(c)
-		}
+func (h *Handler) PickSession(c echo.Context, sess *model.Session) error {
+	cookie, err := c.Cookie("session_id")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-}
 
-func (h *Handler) EnsureAccessRightToAccount() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			sess := &model.Session{}
-			err := pickSession(c, h, sess)
-			if err != nil {
-				return err
-			}
-
-			uid := c.Param("uid")
-			if uid == "" {
-				return echo.NewHTTPError(http.StatusBadRequest, "`uid` is required")
-			}
-
-			if uid != sess.UserId {
-				return echo.NewHTTPError(http.StatusForbidden, "cannot access other's account")
-			}
-
-			return next(c)
-		}
+	sess, err = h.si.CheckSession(cookie.Value)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-}
+	if sess != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
 
-func onFailedError(c echo.Context) error {
-	return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	return nil
 }

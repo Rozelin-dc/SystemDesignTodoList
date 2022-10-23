@@ -1,6 +1,9 @@
 package infra
 
 import (
+	"database/sql"
+	"errors"
+
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
 	"github.com/google/uuid"
@@ -27,6 +30,24 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string) ([]*model.TaskSimp
 	}
 
 	return tasks, nil
+}
+
+func (ti *taskInfra) GetTaskByTaskId(taskId string) (*model.Task, error) {
+	task := model.Task{}
+	err := ti.db.Select(
+		&task,
+		"SELECT * FROM `tasks` WHERE `task_id` = ?",
+		taskId,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &task, nil
 }
 
 func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.TaskSimple, error) {
