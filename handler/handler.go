@@ -27,5 +27,5 @@ func NewHandler(db *sqlx.DB) *Handler {
 }
 
 func (h *Handler) NotImpl(c echo.Context) error {
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNotImplemented)
 }
