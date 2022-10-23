@@ -175,7 +175,7 @@ paths:
       summary: タスク編集
       operationId: patchTask
       parameters:
-        - name: uid
+        - name: tid
           in: path
           required: true
           description: タスクID
@@ -202,7 +202,7 @@ paths:
       summary: タスク削除
       operationId: deleteTask
       parameters:
-        - name: taskId
+        - name: tid
           in: path
           description: 削除するタスクのID
           schema:
