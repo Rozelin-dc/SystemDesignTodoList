@@ -11,10 +11,15 @@ export default defineConfig({
     }
   },
   server: {
+    port: 3000,
     proxy: {
       '/api': {
         target: `http://${devHost}`,
-        changeOrigin: true
+        changeOrigin: true,
+        rewrite:
+          process.env.NODE_ENV === 'development'
+            ? path => path.replace(/^\/api/, '')
+            : null
       }
     }
   },
