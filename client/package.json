@@ -11,6 +11,7 @@
     "gen-api": "node ./scripts/gen-api.mjs"
   },
   "dependencies": {
+    "element-plus": "^2.2.19",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",
     "vue": "^3.2.37",
