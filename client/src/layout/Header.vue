@@ -22,7 +22,7 @@ const doLogout = async () => {
 
 <template>
   <div class="header-container">
-    <span class="title">{{ route.name }}</span>
+    <span class="title">{{ route.meta.title }}</span>
     <span>ユーザー名: {{ meStore.getMe?.userName }}</span>
     <el-button round @click="doLogout">ログアウト</el-button>
   </div>

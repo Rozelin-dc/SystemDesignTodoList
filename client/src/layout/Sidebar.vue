@@ -6,7 +6,9 @@ import { sidebarRoutes } from '@/router'
   <div class="sidebar-container">
     <div class="title">TODO List</div>
     <div v-for="route in sidebarRoutes" :key="route.name" class="sidebar-item">
-      <span v-if="route.meta">{{ route.meta.title }}</span>
+      <router-link v-if="route.meta" :to="route" class="link">{{
+        route.meta.title
+      }}</router-link>
     </div>
   </div>
 </template>
@@ -25,6 +27,11 @@ import { sidebarRoutes } from '@/router'
 
   .sidebar-item {
     margin: 10px 0;
+
+    .link {
+      color: white;
+      text-decoration: none;
+    }
   }
 }
 </style>
