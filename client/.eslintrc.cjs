@@ -47,6 +47,7 @@ module.exports = {
     'vue/eqeqeq': 'error',
     'vue/key-spacing': 'error',
     'vue/match-component-file-name': 'error',
+    'vue/multi-word-component-names': 'off',
     'vue/v-on-event-hyphenation': [
       'error',
       'always',

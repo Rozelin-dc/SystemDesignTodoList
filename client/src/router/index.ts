@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import Layout from '@/layout/index.vue'
 
 interface RouteMeta {
   title: string
+  isPublic?: boolean
 }
 
 type IRouteRecordRaw = RouteRecordRaw & {
@@ -9,16 +11,40 @@ type IRouteRecordRaw = RouteRecordRaw & {
   children?: IRouteRecordRaw[]
 }
 
-const sideBarRoutes: IRouteRecordRaw[] = [
+export const sidebarRoutes: IRouteRecordRaw[] = [
+  {
+    path: '',
+    name: 'Home',
+    component: () => import('@/pages/Home/index.vue'),
+    meta: { title: 'タスク一覧' }
+  },
+  {
+    path: 'change-name',
+    name: 'ChangeName',
+    component: () => import('@/pages/Home/index.vue'),
+    meta: { title: 'アカウント名変更' }
+  }
+]
+
+const constantRouts: IRouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('@/components/HelloWorld.vue')
+    component: Layout,
+    children: sidebarRoutes
+  }
+]
+
+const publicRoutes: IRouteRecordRaw[] = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/pages/Home/index.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: sideBarRoutes
+  routes: constantRouts.concat(publicRoutes)
 })
 
 export default router
