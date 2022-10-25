@@ -24,13 +24,13 @@ onMounted(async () => {
       <span>期限</span>
       <span>状態</span>
     </div>
-    <task-component
+    <div
       v-for="(task, idx) in taskStore.getTasks"
       :key="task.taskId"
-      :task="task"
-      :index="idx"
       class="task-item"
-    />
+    >
+      <task-component :task="task" :index="idx" />
+    </div>
   </div>
 </template>
 
