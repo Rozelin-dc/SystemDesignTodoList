@@ -10,6 +10,10 @@ export const useMe = defineStore('me', {
     async setMe() {
       const { data } = await api.getUserMe()
       this.me = data
+    },
+    async logout() {
+      await api.postLogout()
+      this.me = undefined
     }
   }
 })

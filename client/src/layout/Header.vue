@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
 import { useRoute, useRouter } from 'vue-router'
-import api from '@/lib/apis'
 import { useMe } from '@/store/me'
 import { showErrorMessage } from '@/util/showErrorMessage'
 
 const route = useRoute()
 const router = useRouter()
-const meStore = useMe()
 
+const meStore = useMe()
 const doLogout = async () => {
   try {
-    api.postLogout()
+    await meStore.logout()
     router.push({ name: 'Login' })
   } catch (e: any) {
     const err: AxiosError = e
@@ -24,7 +23,7 @@ const doLogout = async () => {
   <div class="header-container">
     <span class="title">{{ route.meta.title }}</span>
     <span>ユーザー名: {{ meStore.getMe?.userName }}</span>
-    <el-button round @click="doLogout">ログアウト</el-button>
+    <el-button @click="doLogout" link>ログアウト</el-button>
   </div>
 </template>
 
