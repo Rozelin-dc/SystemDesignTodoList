@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { AxiosError } from 'axios'
 import { useMe } from '@/store/me'
-import { showErrorMessage } from './util/showErrorMessage';
+import { showErrorMessage } from './util/showErrorMessage'
 
 const meStore = useMe()
 
