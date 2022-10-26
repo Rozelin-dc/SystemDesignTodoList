@@ -1,15 +1,46 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
-import { onMounted } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
+import { ElLoading } from 'element-plus'
 import { useTask } from '@/store/task'
 import { showErrorMessage } from '@/util/showErrorMessage'
 import TaskComponent from './components/Task.vue'
 
 const taskStore = useTask()
 
+const loadingEle = ref<HTMLDivElement | undefined>(undefined)
+watchEffect(onCleanup => {
+  const { value } = loadingEle
+  if (!value || !taskStore.getHasNext) {
+    return
+  }
+
+  const observer = new IntersectionObserver(
+    entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) {
+          return
+        }
+      }
+
+      void taskStore.setTasks(10, taskStore.getTasks.length)
+    },
+    {
+      threshold: 0.5
+    }
+  )
+  observer.observe(value)
+
+  onCleanup(() => observer.disconnect())
+})
+
 onMounted(async () => {
   try {
     await taskStore.setTasks(20, 0)
+
+    if (loadingEle.value) {
+      ElLoading.service({ target: loadingEle.value })
+    }
   } catch (e: any) {
     const err: AxiosError = e
     showErrorMessage(err)
@@ -31,6 +62,7 @@ onMounted(async () => {
     >
       <task-component :task="task" :index="idx" />
     </div>
+    <div v-if="taskStore.getHasNext" ref="loadingEle" class="loading" />
   </div>
 </template>
 
@@ -46,6 +78,10 @@ onMounted(async () => {
 
   .task-item {
     margin: 10px 0;
+  }
+
+  .loading {
+    height: 50px;
   }
 }
 </style>

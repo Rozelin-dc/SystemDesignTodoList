@@ -2,15 +2,23 @@ import { defineStore } from 'pinia'
 import api, { Task, UpdateTask } from '@/lib/apis'
 
 export const useTask = defineStore('task', {
-  state: (): { tasks: Task[] } => ({ tasks: [] }),
+  state: (): { tasks: Task[]; hasNext: boolean } => ({
+    tasks: [],
+    hasNext: true
+  }),
   getters: {
-    getTasks: state => state.tasks
+    getTasks: state => state.tasks,
+    getHasNext: state => state.hasNext
   },
   actions: {
     async setTasks(limit: number, offset: number) {
       const { data } = await api.getTasks(limit, offset)
-      this.tasks = data.tasks
-      return data.hasNext
+      if (offset === 0) {
+        this.tasks = data.tasks
+      } else {
+        this.tasks = this.tasks.concat(data.tasks)
+      }
+      this.hasNext = data.hasNext
     },
     async editTask(idx: number, id: string, newData: UpdateTask) {
       const { data } = await api.patchTask(id, newData)
