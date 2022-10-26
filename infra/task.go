@@ -22,12 +22,19 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 	tasks := []*model.TaskSimple{}
 	err := ti.db.Select(
 		&tasks,
-		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ? LIMIT ? OFFSET ? ORDER BY `created_at` ASC",
+		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ? LIMIT ? OFFSET ? ORDER BY `created_at` DESC",
 		creatorId,
 		limit,
 		offset,
 	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return &model.TaskList{
+				HasNext: false,
+				Tasks:   nil,
+			}, nil
+		}
+
 		return nil, err
 	}
 

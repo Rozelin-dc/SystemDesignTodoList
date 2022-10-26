@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import api, { Task, UpdateTask } from '@/lib/apis'
+import api, { NewTask, Task, UpdateTask } from '@/lib/apis'
 
 export const useTask = defineStore('task', {
   state: (): { tasks: Task[]; hasNext: boolean } => ({
@@ -27,6 +27,10 @@ export const useTask = defineStore('task', {
     async deleteTask(idx: number, id: string) {
       await api.deleteTask(id)
       this.tasks = this.tasks.filter((_, index) => index != idx)
+    },
+    async createTask(task: NewTask) {
+      const { data } = await api.createTask(task)
+      this.tasks.unshift(data)
     }
   }
 })

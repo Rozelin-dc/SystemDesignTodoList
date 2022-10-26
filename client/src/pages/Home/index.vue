@@ -5,6 +5,9 @@ import { ElLoading } from 'element-plus'
 import { useTask } from '@/store/task'
 import { showErrorMessage } from '@/util/showErrorMessage'
 import TaskComponent from './components/Task.vue'
+import NewTaskDialog from './components/NewTaskDialog.vue'
+
+const showCreateDialog = ref(false)
 
 const taskStore = useTask()
 
@@ -50,6 +53,12 @@ onMounted(async () => {
 
 <template>
   <div class="task-list-container">
+    <div class="create-task-button">
+      <el-button type="primary" @click="showCreateDialog = true" round>
+        タスク作成
+      </el-button>
+    </div>
+
     <div class="task-table task-table-header">
       <span>タスク名</span>
       <span>期限</span>
@@ -64,6 +73,7 @@ onMounted(async () => {
     </div>
     <div v-if="taskStore.getHasNext" ref="loadingEle" class="loading" />
   </div>
+  <new-task-dialog v-model="showCreateDialog" />
 </template>
 
 <style lang="scss" scoped>
@@ -71,6 +81,12 @@ onMounted(async () => {
 
 .task-list-container {
   padding: 10px 5px 0;
+
+  .create-task-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
 
   .task-table-header {
     font-weight: bold;
