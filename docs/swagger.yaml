@@ -21,6 +21,10 @@ paths:
       responses:
         '200':
           description: ログインに成功しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
         '400':
           description: ログインに失敗しました
 
@@ -175,7 +179,7 @@ paths:
       summary: タスク編集
       operationId: patchTask
       parameters:
-        - name: uid
+        - name: tid
           in: path
           required: true
           description: タスクID
@@ -202,7 +206,7 @@ paths:
       summary: タスク削除
       operationId: deleteTask
       parameters:
-        - name: taskId
+        - name: tid
           in: path
           description: 削除するタスクのID
           schema:
@@ -334,3 +338,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Task"
+      required:
+        - hasNext
+        - tasks
