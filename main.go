@@ -1,8 +1,11 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
 	mid "github.com/Rozelin-dc/SystemDesignTodoList/middleware"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo-contrib/session"
@@ -50,6 +53,15 @@ func main() {
 			}
 		}
 	}
+
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Skipper: func(c echo.Context) bool {
+			return strings.HasPrefix(c.Request().URL.Path, "/api")
+		},
+		Root:  "web/dist",
+		HTML5: true,
+	}))
+
 	if err := e.Start(":80"); err != nil {
 		panic(err)
 	}
