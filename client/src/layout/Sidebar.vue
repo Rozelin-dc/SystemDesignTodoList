@@ -6,9 +6,13 @@ import { sidebarRoutes } from '@/router'
   <div class="sidebar-container">
     <div class="title">TODO List</div>
     <div v-for="route in sidebarRoutes" :key="route.name" class="sidebar-item">
-      <router-link v-if="route.meta" :to="route" class="link">{{
-        route.meta.title
-      }}</router-link>
+      <router-link
+        v-if="route.meta && $route.meta.title"
+        :to="{ name: route.name }"
+        class="link"
+      >
+        {{ route.meta.title }}
+      </router-link>
     </div>
   </div>
 </template>

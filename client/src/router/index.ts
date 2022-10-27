@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
 
 interface RouteMeta {
-  title: string
+  title?: string
   isPublic?: boolean
 }
 
@@ -57,7 +57,12 @@ const publicRoutes: IRouteRecordRaw[] = [
     name: 'CreateAccount',
     component: () => import('@/pages/CreateAccount/index.vue')
   }
-]
+].map((route: IRouteRecordRaw) => {
+  return {
+    ...route,
+    meta: { isPublic: true }
+  }
+})
 
 const router = createRouter({
   history: createWebHistory(),
