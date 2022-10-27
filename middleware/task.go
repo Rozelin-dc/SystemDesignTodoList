@@ -3,7 +3,6 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
 	"github.com/labstack/echo/v4"
 )
@@ -21,8 +20,7 @@ func EnsureExistTaskAndHaveAccessRight(h *handler.Handler) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusBadRequest, "`tid` is required")
 			}
 
-			task := &model.Task{}
-			err = h.PickTaskById(tid, task)
+			task, err := h.PickTaskById(tid)
 			if err != nil {
 				return err
 			}

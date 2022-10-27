@@ -92,13 +92,13 @@ func (h *Handler) DeleteTask(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *Handler) PickTaskById(taskId string, task *model.Task) error {
+func (h *Handler) PickTaskById(taskId string) (*model.Task, error) {
 	task, err := h.ti.GetTaskByTaskId(taskId)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if task == nil {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("no such task `%s`", taskId))
+		return nil, echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("no such task `%s`", taskId))
 	}
-	return nil
+	return task, nil
 }
