@@ -50,7 +50,7 @@ const publicRoutes: IRouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/pages/Home/index.vue')
+    component: () => import('@/pages/Login/index.vue')
   }
 ]
 

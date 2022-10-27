@@ -21,6 +21,10 @@ paths:
       responses:
         '200':
           description: ログインに成功しました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithoutPass"
         '400':
           description: ログインに失敗しました
 

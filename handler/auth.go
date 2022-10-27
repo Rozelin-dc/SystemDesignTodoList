@@ -24,7 +24,7 @@ func (h *Handler) PostLogin(c echo.Context) error {
 		return err
 	}
 
-	return c.NoContent(http.StatusOK)
+	return c.JSON(http.StatusOK, user)
 }
 
 func (h *Handler) PostLogout(c echo.Context) error {

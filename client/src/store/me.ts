@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import api, { UserWithoutPass, UpdateUser } from '@/lib/apis'
+import api, { UserWithoutPass, UpdateUser, UserSimple } from '@/lib/apis'
 
 export const useMe = defineStore('me', {
   state: (): { me: UserWithoutPass | undefined } => ({ me: undefined }),
@@ -9,6 +9,10 @@ export const useMe = defineStore('me', {
   actions: {
     async setMe() {
       const { data } = await api.getUserMe()
+      this.me = data
+    },
+    async login(userData: UserSimple) {
+      const { data } = await api.postLogin(userData)
       this.me = data
     },
     async logout() {
