@@ -79,13 +79,13 @@ func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 
 	uuidStr := uu.String()
 
-	if task.TimeLimit != nil {
+	if task.TimeLimit != "" {
 		_, err = ti.db.Exec(
 			"INSERT INTO `tasks` (`task_id`, `creator_id`, `task_name`, `time_limit`) VALUES (?, ?, ?, ?)",
 			uuidStr,
 			creatorId,
 			task.TaskName,
-			task.TimeLimit.Local(),
+			task.TimeLimit,
 		)
 		if err != nil {
 			return nil, err
@@ -111,12 +111,12 @@ func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 }
 
 func (ti *taskInfra) EditTask(taskId string, task *model.TaskUpdate) (*model.TaskSimple, error) {
-	if task.TimeLimit != nil {
+	if task.TimeLimit != "" {
 		_, err := ti.db.Exec(
 			"UPDATE `tasks` SET `task_name` = ?, `status` = ?, `time_limit` = ? WHERE `task_id` = ?",
 			task.TaskName,
 			task.Status,
-			task.TimeLimit.Local(),
+			task.TimeLimit,
 			taskId,
 		)
 		if err != nil {

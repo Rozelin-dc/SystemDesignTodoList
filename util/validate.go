@@ -11,9 +11,10 @@ type Validator struct {
 }
 
 var expressions = map[string]*regexp.Regexp{
-	"userName": regexp.MustCompile(`^[a-zA-Z0-9_-]{1,30}$`),
-	"taskName": regexp.MustCompile(`^.{1,60}$`),
-	"password": regexp.MustCompile(`^[\x21-\x7E]{10,32}$`),
+	"userName":  regexp.MustCompile(`^[a-zA-Z0-9_-]{1,30}$`),
+	"taskName":  regexp.MustCompile(`^.{1,60}$`),
+	"timeLimit": regexp.MustCompile(`^[1-2][0-9]{3}/[0-1][0-9]/[0-3][0-9]$`),
+	"password":  regexp.MustCompile(`^[\x21-\x7E]{10,32}$`),
 }
 
 func (v *Validator) Validate(i interface{}) error {
@@ -28,6 +29,9 @@ func GetValidator() *Validator {
 			return e.MatchString(fl.Field().String())
 		})
 	}
+	v.RegisterValidation("status", func(fl validator.FieldLevel) bool {
+		return fl.Field().Int() == 0 || fl.Field().Int() == 1
+	})
 
 	return &Validator{v}
 }

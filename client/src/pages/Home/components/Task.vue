@@ -2,7 +2,6 @@
 import { AxiosError } from 'axios'
 import { PropType, ref } from 'vue'
 import { Task } from '@/lib/apis'
-import { parseDay } from '@/util/day'
 import { TaskStatus } from '@/types/taskStatus'
 import { useTask } from '@/store/task'
 import { showErrorMessage } from '@/util/showErrorMessage'
@@ -55,7 +54,7 @@ const taskDelete = async () => {
 <template>
   <div class="task-table">
     <span>{{ task.taskName }}</span>
-    <span>{{ task.timeLimit ? parseDay(task.timeLimit) : 'なし' }}</span>
+    <span>{{ task.timeLimit ?? 'なし' }}</span>
     <span>{{ task.status === TaskStatus.COMPLETE ? '完了済み' : '未完' }}</span>
     <span class="buttons">
       <el-button

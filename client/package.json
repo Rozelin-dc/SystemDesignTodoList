@@ -12,7 +12,6 @@
     "mock": "prism mock -p 3050 -d ../docs/swagger.yaml"
   },
   "dependencies": {
-    "dayjs": "^1.11.6",
     "element-plus": "^2.2.19",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",

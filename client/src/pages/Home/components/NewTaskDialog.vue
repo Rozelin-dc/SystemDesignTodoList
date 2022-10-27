@@ -54,6 +54,7 @@ const confirmCreate = async () => {
           v-model="newTask.timeLimit"
           type="date"
           format="YYYY/MM/DD"
+          value-format="YYYY/MM/DD"
         />
       </el-form-item>
     </el-form>
