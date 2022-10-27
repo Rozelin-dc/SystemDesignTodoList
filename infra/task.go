@@ -28,14 +28,13 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 		offset,
 	)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return &model.TaskList{
-				HasNext: false,
-				Tasks:   nil,
-			}, nil
-		}
-
 		return nil, err
+	}
+	if len(tasks) == 0 {
+		return &model.TaskList{
+			HasNext: false,
+			Tasks:   nil,
+		}, nil
 	}
 
 	count := 0

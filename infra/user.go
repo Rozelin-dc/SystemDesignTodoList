@@ -2,6 +2,7 @@ package infra
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
@@ -56,7 +57,7 @@ func (ui *userInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
 		userId,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 
@@ -135,7 +136,7 @@ func (ui *userInfra) CheckRightUser(user *model.UserSimple) (*model.UserWithoutP
 		user.UserName,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 
@@ -161,7 +162,7 @@ func (ui *userInfra) CheckUsedUserName(userName string) (*model.UserWithoutPass,
 		userName,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 
