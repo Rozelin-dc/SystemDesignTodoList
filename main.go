@@ -46,8 +46,8 @@ func main() {
 
 			apiTaskId := apiTask.Group("/:tid", mid.EnsureExistTaskAndHaveAccessRight(h))
 			{
-				apiTaskId.PATCH("/:tid", h.PatchTask)
-				apiTaskId.DELETE("/:tid", h.DeleteTask)
+				apiTaskId.PATCH("", h.PatchTask)
+				apiTaskId.DELETE("", h.DeleteTask)
 			}
 		}
 	}
