@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
-import { PropType, ref, onMounted } from 'vue'
+import { PropType, ref } from 'vue'
 import { Task } from '@/lib/apis'
 import { parseDay } from '@/util/day'
 import { TaskStatus } from '@/types/taskStatus'
@@ -50,23 +50,13 @@ const taskDelete = async () => {
     loading.value = false
   }
 }
-
-const formattedTimeLimit = ref('')
-const taskStatus = ref('')
-onMounted(() => {
-  formattedTimeLimit.value = props.task.timeLimit
-    ? parseDay(props.task.timeLimit)
-    : 'なし'
-  taskStatus.value =
-    props.task.status === TaskStatus.COMPLETE ? '完了済み' : '未完'
-})
 </script>
 
 <template>
   <div class="task-table">
     <span>{{ task.taskName }}</span>
-    <span>{{ formattedTimeLimit }}</span>
-    <span>{{ taskStatus }}</span>
+    <span>{{ task.timeLimit ? parseDay(task.timeLimit) : 'なし' }}</span>
+    <span>{{ task.status === TaskStatus.COMPLETE ? '完了済み' : '未完' }}</span>
     <span class="buttons">
       <el-button
         v-if="task.status === TaskStatus.INCOMPLETE"
