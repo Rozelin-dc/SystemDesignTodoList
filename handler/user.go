@@ -72,6 +72,16 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	err = h.ti.DeleteTaskByUserId(uid)
+	if err != nil {
+		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	err = h.si.DeleteSessionsByUserId(uid)
+	if err != nil {
+		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
 	return c.NoContent(http.StatusOK)
 }
 

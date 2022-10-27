@@ -84,7 +84,7 @@ func (h *Handler) DeleteTask(c echo.Context) error {
 		return err
 	}
 
-	err = h.ti.DeleteTask(tid, sess.UserId)
+	err = h.ti.DeleteTaskByTaskId(tid, sess.UserId)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

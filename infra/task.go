@@ -22,7 +22,7 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 	tasks := []*model.TaskSimple{}
 	err := ti.db.Select(
 		&tasks,
-		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ? LIMIT ? OFFSET ? ORDER BY `created_at` DESC",
+		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?",
 		creatorId,
 		limit,
 		offset,
@@ -39,8 +39,9 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 	}
 
 	count := 0
-	err = ti.db.Select(
-		"SELECT COUNT(*) FROM `tasks` WHERE `creator_id` = ?",
+	err = ti.db.Get(
+		&count,
+		"SELECT COUNT(*) FROM `tasks` WHERE `creator_id` = ? GROUP BY `creator_id`",
 		creatorId,
 	)
 	if err != nil {
@@ -55,7 +56,7 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 
 func (ti *taskInfra) GetTaskByTaskId(taskId string) (*model.Task, error) {
 	task := model.Task{}
-	err := ti.db.Select(
+	err := ti.db.Get(
 		&task,
 		"SELECT * FROM `tasks` WHERE `task_id` = ?",
 		taskId,
@@ -142,10 +143,19 @@ func (ti *taskInfra) EditTask(taskId string, task *model.TaskUpdate) (*model.Tas
 	}, nil
 }
 
-func (ti *taskInfra) DeleteTask(taskId string, userId string) error {
+func (ti *taskInfra) DeleteTaskByTaskId(taskId string, userId string) error {
 	_, err := ti.db.Exec(
 		"DELETE FROM `tasks` WHERE `task_id` = ? AND `creator_id` = ?",
 		taskId,
+		userId,
+	)
+
+	return err
+}
+
+func (ti *taskInfra) DeleteTaskByUserId(userId string) error {
+	_, err := ti.db.Exec(
+		"DELETE FROM `tasks` WHERE `creator_id` = ?",
 		userId,
 	)
 

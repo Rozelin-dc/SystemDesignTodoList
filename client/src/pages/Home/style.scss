@@ -1,4 +1,5 @@
 .task-table {
   display: grid;
   grid-template-columns: 1fr 100px 70px 180px;
+  align-items: center;
 }

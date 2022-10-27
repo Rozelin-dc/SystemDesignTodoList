@@ -4,7 +4,7 @@ import api, { NewTask, Task, UpdateTask } from '@/lib/apis'
 export const useTask = defineStore('task', {
   state: (): { tasks: Task[]; hasNext: boolean } => ({
     tasks: [],
-    hasNext: true
+    hasNext: false
   }),
   getters: {
     getTasks: state => state.tasks,
@@ -21,7 +21,10 @@ export const useTask = defineStore('task', {
       this.hasNext = data.hasNext
     },
     async editTask(idx: number, id: string, newData: UpdateTask) {
-      const { data } = await api.patchTask(id, newData)
+      const { data } = await api.patchTask(id, {
+        ...newData,
+        timeLimit: newData.timeLimit === '' ? undefined : newData.timeLimit
+      })
       this.tasks[idx] = data
     },
     async deleteTask(idx: number, id: string) {
@@ -29,7 +32,10 @@ export const useTask = defineStore('task', {
       this.tasks = this.tasks.filter((_, index) => index != idx)
     },
     async createTask(task: NewTask) {
-      const { data } = await api.createTask(task)
+      const { data } = await api.createTask({
+        ...task,
+        timeLimit: task.timeLimit === '' ? undefined : task.timeLimit
+      })
       this.tasks.unshift(data)
     }
   }

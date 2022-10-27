@@ -7,5 +7,6 @@ type TaskRepository interface {
 	GetTaskByTaskId(taskId string) (*model.Task, error)
 	CreateTask(creatorId string, task *model.NewTask) (*model.TaskSimple, error)
 	EditTask(taskId string, task *model.TaskUpdate) (*model.TaskSimple, error)
-	DeleteTask(taskId string, userId string) error
+	DeleteTaskByTaskId(taskId string, userId string) error
+	DeleteTaskByUserId(userId string) error
 }
