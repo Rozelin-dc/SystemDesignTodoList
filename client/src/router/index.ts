@@ -19,10 +19,10 @@ export const sidebarRoutes: IRouteRecordRaw[] = [
     meta: { title: 'タスク一覧' }
   },
   {
-    path: 'change-name',
-    name: 'ChangeName',
-    component: () => import('@/pages/Home/index.vue'),
-    meta: { title: 'アカウント名変更' }
+    path: 'change-user-name',
+    name: 'ChangeUserName',
+    component: () => import('@/pages/ChangeUserName/index.vue'),
+    meta: { title: 'ユーザー名変更' }
   }
 ]
 
