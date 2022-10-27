@@ -17,7 +17,7 @@ func (h *Handler) PostTask(c echo.Context) error {
 	}
 
 	task := &model.NewTask{}
-	err = validatedBind(c, task)
+	err = bindParm(c, task)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (h *Handler) GetTasks(c echo.Context) error {
 func (h *Handler) PatchTask(c echo.Context) error {
 	tid := c.Param("tid")
 	task := &model.TaskUpdate{}
-	err := validatedBind(c, task)
+	err := bindParm(c, task)
 	if err != nil {
 		return err
 	}
