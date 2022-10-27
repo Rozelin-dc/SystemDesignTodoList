@@ -48,6 +48,10 @@ const login = async () => {
     <el-button class="button" type="primary" :loading="loading" @click="login">
       ログイン
     </el-button>
+
+    <div class="bottom-nav">
+      <router-link :to="{ name: 'CreateAccount' }">アカウント作成</router-link>
+    </div>
   </div>
 </template>
 
@@ -67,6 +71,12 @@ const login = async () => {
   .button {
     width: 100%;
     margin-top: 10px;
+  }
+
+  .bottom-nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
   }
 }
 </style>
