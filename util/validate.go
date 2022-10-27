@@ -13,7 +13,7 @@ type Validator struct {
 var expressions = map[string]*regexp.Regexp{
 	"userName": regexp.MustCompile(`^[a-zA-Z0-9_-]{1,30}$`),
 	"taskName": regexp.MustCompile(`^.{1,60}$`),
-	"password": regexp.MustCompile(`^[\x20-\x7E]{10,32}$`),
+	"password": regexp.MustCompile(`^[\x21-\x7E]{10,32}$`),
 }
 
 func (v *Validator) Validate(i interface{}) error {
