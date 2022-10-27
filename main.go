@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
 	mid "github.com/Rozelin-dc/SystemDesignTodoList/middleware"
+	"github.com/Rozelin-dc/SystemDesignTodoList/util"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Validator = util.GetValidator()
 
 	e.POST("/api/login", h.PostLogin)
 
@@ -60,7 +62,5 @@ func main() {
 		HTML5: true,
 	}))
 
-	if err := e.Start(":80"); err != nil {
-		panic(err)
-	}
+	e.Logger.Fatal(e.Start(":80"))
 }

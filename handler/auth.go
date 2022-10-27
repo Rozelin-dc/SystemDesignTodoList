@@ -9,7 +9,7 @@ import (
 
 func (h *Handler) PostLogin(c echo.Context) error {
 	newUser := &model.UserSimple{}
-	err := bindParm(c, newUser)
+	err := validatedBind(c, newUser)
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,7 @@ import (
 
 func (h *Handler) PostUser(c echo.Context) error {
 	newUser := &model.UserSimple{}
-	err := bindParm(c, newUser)
+	err := validatedBind(c, newUser)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (h *Handler) GetUserMe(c echo.Context) error {
 func (h *Handler) PatchUser(c echo.Context) error {
 	uid := c.Param("uid")
 	editUser := &model.UserUpdate{}
-	err := bindParm(c, editUser)
+	err := validatedBind(c, editUser)
 	if err != nil {
 		return err
 	}
