@@ -54,7 +54,7 @@ onMounted(async () => {
 <template>
   <div class="task-list-container">
     <div class="create-task-button">
-      <el-button type="primary" @click="showCreateDialog = true" round>
+      <el-button type="primary" @click="showCreateDialog = true">
         タスク作成
       </el-button>
     </div>

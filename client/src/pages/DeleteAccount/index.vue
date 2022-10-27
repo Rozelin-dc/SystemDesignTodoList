@@ -61,7 +61,7 @@ const deleteAccount = async () => {
       </el-form-item>
     </el-form>
 
-    <el-button type="danger" :loading="loading" @click="confirmDelete" round>
+    <el-button type="danger" :loading="loading" @click="confirmDelete">
       削除
     </el-button>
   </div>

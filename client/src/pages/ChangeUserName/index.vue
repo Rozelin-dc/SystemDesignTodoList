@@ -46,7 +46,7 @@ const confirmUpdate = async () => {
       </el-form-item>
     </el-form>
 
-    <el-button type="primary" :loading="loading" @click="confirmUpdate" round>
+    <el-button type="primary" :loading="loading" @click="confirmUpdate">
       更新
     </el-button>
   </div>
