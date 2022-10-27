@@ -36,7 +36,7 @@ const confirmUpdate = async () => {
 </script>
 
 <template>
-  <div class="update-user-name-container">
+  <div class="change-user-name-container">
     <el-form :model="inputData" label-position="top">
       <el-form-item prop="userName" label="ユーザー名">
         <el-input v-model="inputData.userName" />
@@ -53,7 +53,7 @@ const confirmUpdate = async () => {
 </template>
 
 <style lang="scss" scoped>
-.update-user-name-container {
+.change-user-name-container {
   padding: 10px 5px;
 }
 </style>

@@ -40,7 +40,7 @@ const confirmUpdate = async () => {
 </script>
 
 <template>
-  <div class="update-user-name-container">
+  <div class="change-password-container">
     <el-form :model="inputData" label-position="top">
       <el-form-item prop="newPassword" label="新しいパスワード">
         <el-input
@@ -61,7 +61,7 @@ const confirmUpdate = async () => {
 </template>
 
 <style lang="scss" scoped>
-.update-user-name-container {
+.change-password-container {
   padding: 10px 5px;
 }
 </style>
