@@ -32,6 +32,10 @@ export const useMe = defineStore('me', {
       }
       await api.deleteUser(this.me.userId, pass)
       this.me = undefined
+    },
+    async createMe(userData: UserSimple) {
+      const { data } = await api.postUser(userData)
+      this.me = data
     }
   }
 })
