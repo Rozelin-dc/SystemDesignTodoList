@@ -11,8 +11,7 @@ import (
 func EnsureExistTaskAndHaveAccessRight(h *handler.Handler) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			sess := &model.Session{}
-			err := h.PickSession(c, sess)
+			sess, err := h.PickSession(c)
 			if err != nil {
 				return err
 			}

@@ -41,19 +41,19 @@ func (h *Handler) PostLogout(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *Handler) PickSession(c echo.Context, sess *model.Session) error {
+func (h *Handler) PickSession(c echo.Context) (*model.Session, error) {
 	cookie, err := c.Cookie("session_id")
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	sess, err = h.si.CheckSession(cookie.Value)
+	sess, err := h.si.CheckSession(cookie.Value)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	if sess != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	if sess == nil {
+		return nil, echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
 
-	return nil
+	return sess, nil
 }

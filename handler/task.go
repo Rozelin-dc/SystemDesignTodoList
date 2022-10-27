@@ -10,8 +10,7 @@ import (
 )
 
 func (h *Handler) PostTask(c echo.Context) error {
-	sess := &model.Session{}
-	err := h.PickSession(c, sess)
+	sess, err := h.PickSession(c)
 	if err != nil {
 		return err
 	}
@@ -31,8 +30,7 @@ func (h *Handler) PostTask(c echo.Context) error {
 }
 
 func (h *Handler) GetTasks(c echo.Context) error {
-	sess := &model.Session{}
-	err := h.PickSession(c, sess)
+	sess, err := h.PickSession(c)
 	if err != nil {
 		return err
 	}
@@ -81,8 +79,7 @@ func (h *Handler) PatchTask(c echo.Context) error {
 
 func (h *Handler) DeleteTask(c echo.Context) error {
 	tid := c.Param("tid")
-	sess := &model.Session{}
-	err := h.PickSession(c, sess)
+	sess, err := h.PickSession(c)
 	if err != nil {
 		return err
 	}

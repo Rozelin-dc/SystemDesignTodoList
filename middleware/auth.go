@@ -3,7 +3,6 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
 	"github.com/labstack/echo/v4"
 )
@@ -17,8 +16,7 @@ func EnsureAuthorized(h *handler.Handler) echo.MiddlewareFunc {
 				return next(c)
 			}
 
-			sess := &model.Session{}
-			err := h.PickSession(c, sess)
+			_, err := h.PickSession(c)
 			if err != nil {
 				return err
 			}
@@ -31,8 +29,7 @@ func EnsureAuthorized(h *handler.Handler) echo.MiddlewareFunc {
 func EnsureAccessRightToAccount(h *handler.Handler) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			sess := &model.Session{}
-			err := h.PickSession(c, sess)
+			sess, err := h.PickSession(c)
 			if err != nil {
 				return err
 			}

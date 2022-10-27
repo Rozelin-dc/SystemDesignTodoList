@@ -31,8 +31,7 @@ func (h *Handler) PostUser(c echo.Context) error {
 }
 
 func (h *Handler) GetUserMe(c echo.Context) error {
-	sess := &model.Session{}
-	err := h.PickSession(c, sess)
+	sess, err := h.PickSession(c)
 	if err != nil {
 		return err
 	}

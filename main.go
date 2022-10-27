@@ -6,9 +6,7 @@ import (
 	"github.com/Rozelin-dc/SystemDesignTodoList/handler"
 	mid "github.com/Rozelin-dc/SystemDesignTodoList/middleware"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -21,7 +19,6 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	e.POST("/api/login", h.PostLogin)
 
