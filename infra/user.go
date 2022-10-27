@@ -132,7 +132,7 @@ func (ui *userInfra) CheckRightUser(user *model.UserSimple) (*model.UserWithoutP
 	u := model.User{}
 	err := ui.db.Get(
 		&u,
-		"SELECT * FROM `users` WHERE `user_id` = ?",
+		"SELECT * FROM `users` WHERE `user_name` = ?",
 		user.UserName,
 	)
 	if err != nil {
