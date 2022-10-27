@@ -18,6 +18,9 @@ func (h *Handler) PostLogin(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if user == nil {
+		return echo.NewHTTPError(http.StatusNotFound, "no such user")
+	}
 
 	err = createSessionAndSetCookie(c, h, user.UserId)
 	if err != nil {

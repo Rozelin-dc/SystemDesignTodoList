@@ -40,6 +40,9 @@ func (h *Handler) GetUserMe(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	if user == nil {
+		return echo.NewHTTPError(http.StatusNotFound, "no such user")
+	}
 
 	return c.JSON(http.StatusOK, user)
 }
