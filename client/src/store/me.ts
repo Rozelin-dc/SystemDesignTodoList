@@ -21,6 +21,13 @@ export const useMe = defineStore('me', {
       }
       const { data } = await api.patchUser(this.me.userId, newData)
       this.me = data
+    },
+    async deleteMe(pass: string) {
+      if (!this.me) {
+        throw new Error('not logged in')
+      }
+      await api.deleteUser(this.me.userId, pass)
+      this.me = undefined
     }
   }
 })
