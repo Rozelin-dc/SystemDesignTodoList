@@ -11,6 +11,12 @@ import (
 func EnsureAuthorized(h *handler.Handler) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			path := c.Path()
+			method := c.Request().Method
+			if path == "/api/user" && method == "POST" {
+				return next(c)
+			}
+
 			sess := &model.Session{}
 			err := h.PickSession(c, sess)
 			if err != nil {
