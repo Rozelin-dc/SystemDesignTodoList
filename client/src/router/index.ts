@@ -23,6 +23,12 @@ export const sidebarRoutes: IRouteRecordRaw[] = [
     name: 'ChangeUserName',
     component: () => import('@/pages/ChangeUserName/index.vue'),
     meta: { title: 'ユーザー名変更' }
+  },
+  {
+    path: 'change-password',
+    name: 'ChangePassword',
+    component: () => import('@/pages/ChangePassword/index.vue'),
+    meta: { title: 'パスワード変更' }
   }
 ]
 
