@@ -1,5 +1,8 @@
+import { AxiosError } from 'axios'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
+import { useMe } from '@/store/me'
+import { showErrorMessage } from '@/util/showErrorMessage'
 
 interface RouteMeta {
   title?: string
@@ -67,6 +70,26 @@ const publicRoutes: IRouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes: constantRouts.concat(publicRoutes)
+})
+
+router.beforeEach(async (to, _, next) => {
+  if (to.meta.isPublic) {
+    next()
+  }
+
+  const meStore = useMe()
+  if (meStore.getMe) {
+    next()
+  }
+
+  try {
+    await meStore.setMe()
+    next()
+  } catch (e: any) {
+    const err: AxiosError = e
+    showErrorMessage(err)
+    next({ name: 'Login' })
+  }
 })
 
 export default router
