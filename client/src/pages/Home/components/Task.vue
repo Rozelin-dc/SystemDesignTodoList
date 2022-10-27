@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
-import { PropType, ref } from 'vue'
+import { PropType, ref, onMounted } from 'vue'
 import { Task } from '@/lib/apis'
 import { parseDay } from '@/util/day'
 import { TaskStatus } from '@/types/taskStatus'
@@ -18,13 +18,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const formattedTimeLimit = ref(
-  props.task.timeLimit ? parseDay(props.task.timeLimit) : 'なし'
-)
-const taskStatus = ref(
-  props.task.status === TaskStatus.COMPLETE ? '完了済み' : '未完'
-)
 
 const showEditDialog = ref(false)
 
@@ -57,6 +50,16 @@ const taskDelete = async () => {
     loading.value = false
   }
 }
+
+const formattedTimeLimit = ref('')
+const taskStatus = ref('')
+onMounted(() => {
+  formattedTimeLimit.value = props.task.timeLimit
+    ? parseDay(props.task.timeLimit)
+    : 'なし'
+  taskStatus.value =
+    props.task.status === TaskStatus.COMPLETE ? '完了済み' : '未完'
+})
 </script>
 
 <template>
