@@ -6,7 +6,7 @@ info:
   description:  todolist API
 
 servers:
-  - url: localhost:6000
+  - url: localhost:3050
 
 paths:
   '/login':
@@ -25,8 +25,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserWithoutPass"
-        '400':
-          description: ログインに失敗しました
 
   '/logout':
     post:
@@ -48,14 +46,12 @@ paths:
             schema:
               $ref: "#/components/schemas/UserSimple"
       responses:
-        '201':
+        '200':
           description: 作成されたアカウント
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserWithoutPass"
-        '400':
-          description: アカウント作成に失敗しました
 
   /user/{uid}:
     patch:
@@ -77,14 +73,14 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateUser"
       responses:
-        '201':
+        '200':
           description: 編集されたアカウント
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserWithoutPass"
-        '400':
-          description: アカウント編集に失敗しました
+        '404':
+          description: 存在しないアカウントです
     delete:
       tags:
         - user
@@ -107,8 +103,8 @@ paths:
       responses:
         '200':
           description: アカウント削除に成功しました
-        '400':
-          description: アカウント削除に失敗しました
+        '404':
+          description: 存在しないアカウントです
 
   '/user/me':
     get:
@@ -117,7 +113,7 @@ paths:
       summary: 自分のユーザー情報を取得
       operationId: getUserMe
       responses:
-        '201':
+        '200':
           description: アカウント情報
           content:
             application/json:
@@ -144,14 +140,12 @@ paths:
             type: integer
             default: 0
       responses:
-        '201':
+        '200':
           description: 取得できたタスク
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskList"
-        '401':
-          description: タスク取得に失敗しました
     post:
       tags:
         - task
@@ -163,14 +157,12 @@ paths:
             schema:
               $ref: "#/components/schemas/NewTask"
       responses:
-        '201':
+        '200':
           description: 作成されたタスク
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
-        '401':
-          description: タスク作成に失敗しました
 
   /task/{tid}:
     patch:
@@ -192,14 +184,14 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateTask"
       responses:
-        '201':
+        '200':
           description: 編集されたタスク
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
-        '401':
-          description: タスク編集に失敗しました
+        '404':
+          description: 存在しないタスクです
     delete:
       tags:
         - task
