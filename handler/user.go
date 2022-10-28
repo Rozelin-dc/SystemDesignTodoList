@@ -25,7 +25,10 @@ func (h *Handler) PostUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	createSessionAndSetCookie(c, h, createdUser.UserId)
+	err = createSessionAndSetCookie(c, h, createdUser.UserId)
+	if err != nil {
+		return err
+	}
 
 	return c.JSON(http.StatusOK, createdUser)
 }
@@ -57,7 +60,7 @@ func (h *Handler) PatchUser(c echo.Context) error {
 
 	user, err := h.ui.EditUser(uid, editUser)
 	if err != nil {
-		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, user)
@@ -72,17 +75,17 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 
 	err := h.ui.DeleteUser(uid, pass)
 	if err != nil {
-		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	err = h.ti.DeleteTaskByUserId(uid)
 	if err != nil {
-		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	err = h.si.DeleteSessionsByUserId(uid)
 	if err != nil {
-		echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.NoContent(http.StatusOK)
