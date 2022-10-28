@@ -22,6 +22,14 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Validator = util.GetValidator()
 
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Skipper: func(c echo.Context) bool {
+			return strings.HasPrefix(c.Request().URL.Path, "/api")
+		},
+		Root:  "web/dist",
+		HTML5: true,
+	}))
+
 	e.POST("/api/login", h.PostLogin)
 
 	api := e.Group("/api", mid.EnsureAuthorized(h))
@@ -53,14 +61,6 @@ func main() {
 			}
 		}
 	}
-
-	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Skipper: func(c echo.Context) bool {
-			return strings.HasPrefix(c.Request().URL.Path, "/api")
-		},
-		Root:  "web/dist",
-		HTML5: true,
-	}))
 
 	e.Logger.Fatal(e.Start(":80"))
 }

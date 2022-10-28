@@ -1,5 +1,10 @@
 import { AxiosError } from 'axios'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  RouteLocation,
+  RouteRecordRaw
+} from 'vue-router'
 import Layout from '@/layout/index.vue'
 import { useMe } from '@/store/me'
 import { showErrorMessage } from '@/util/showErrorMessage'
@@ -12,6 +17,10 @@ interface RouteMeta {
 type IRouteRecordRaw = RouteRecordRaw & {
   meta?: RouteMeta
   children?: IRouteRecordRaw[]
+}
+
+type IRoute = Omit<RouteLocation, 'meta'> & {
+  meta?: RouteMeta
 }
 
 export const sidebarRoutes: IRouteRecordRaw[] = [
@@ -72,8 +81,8 @@ const router = createRouter({
   routes: constantRouts.concat(publicRoutes)
 })
 
-router.beforeEach(async (to, _, next) => {
-  if (to.meta.isPublic) {
+router.beforeEach(async (to: IRoute, _, next) => {
+  if (to.meta && to.meta.isPublic) {
     next()
   }
 

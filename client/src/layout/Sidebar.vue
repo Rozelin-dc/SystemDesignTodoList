@@ -10,6 +10,7 @@ import { sidebarRoutes } from '@/router'
         v-if="route.meta && $route.meta.title"
         :to="{ name: route.name }"
         class="link"
+        :class="{ 'active-link': $route.name === route.name }"
       >
         {{ route.meta.title }}
       </router-link>
@@ -35,6 +36,10 @@ import { sidebarRoutes } from '@/router'
     .link {
       color: white;
       text-decoration: none;
+
+      &.active-link {
+        color: #8edbff;
+      }
     }
   }
 }
