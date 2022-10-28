@@ -22,7 +22,7 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 	tasks := []*model.TaskSimple{}
 	err := ti.db.Select(
 		&tasks,
-		"SELECT `task_id`, `task_name`, `status` FROM `tasks` WHERE `creator_id` = ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?",
+		"SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?",
 		creatorId,
 		limit,
 		offset,
@@ -79,7 +79,7 @@ func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 
 	uuidStr := uu.String()
 
-	if task.TimeLimit != "" {
+	if task.TimeLimit != nil {
 		_, err = ti.db.Exec(
 			"INSERT INTO `tasks` (`task_id`, `creator_id`, `task_name`, `time_limit`) VALUES (?, ?, ?, ?)",
 			uuidStr,
@@ -111,7 +111,7 @@ func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 }
 
 func (ti *taskInfra) EditTask(taskId string, task *model.TaskUpdate) (*model.TaskSimple, error) {
-	if task.TimeLimit != "" {
+	if task.TimeLimit != nil {
 		_, err := ti.db.Exec(
 			"UPDATE `tasks` SET `task_name` = ?, `status` = ?, `time_limit` = ? WHERE `task_id` = ?",
 			task.TaskName,

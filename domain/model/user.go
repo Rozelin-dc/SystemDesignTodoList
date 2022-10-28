@@ -15,7 +15,7 @@ type UserUpdate struct {
 type User struct {
 	UserId   string `json:"userId" db:"user_id"`
 	UserName string `json:"userName" db:"user_name" validate:"userName"`
-	Password string `json:"password" validate:"password"`
+	Password string `json:"password" db:"password" validate:"password"`
 }
 
 type UserWithoutPass struct {

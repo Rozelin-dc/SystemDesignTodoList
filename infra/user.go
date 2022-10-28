@@ -68,9 +68,9 @@ func (ui *userInfra) GetUser(userId string) (*model.UserWithoutPass, error) {
 }
 
 func (ui *userInfra) EditUser(userId string, user *model.UserUpdate) (*model.UserWithoutPass, error) {
-	updatedUser := model.User{}
+	u := model.User{}
 	err := ui.db.Get(
-		&updatedUser,
+		&u,
 		"SELECT * FROM `users` WHERE `user_id` = ?",
 		userId,
 	)
@@ -78,7 +78,7 @@ func (ui *userInfra) EditUser(userId string, user *model.UserUpdate) (*model.Use
 		return nil, err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(updatedUser.Password), []byte(user.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(user.Password))
 	if err != nil {
 		return nil, err
 	}

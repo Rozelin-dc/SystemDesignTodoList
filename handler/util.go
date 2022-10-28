@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,6 +31,7 @@ func createSessionAndSetCookie(c echo.Context, h *Handler, userId string) error 
 		Name:     "session_id",
 		Value:    sess.SessionId,
 		Path:     "/",
+		Expires:  time.Date(2030, 12, 31, 23, 59, 59, 99, time.Local),
 		HttpOnly: true,
 	})
 
