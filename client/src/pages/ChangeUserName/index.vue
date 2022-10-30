@@ -1,12 +1,33 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
-import { reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { reactive, ref, watchEffect } from 'vue'
+import { ElMessage, FormInstance } from 'element-plus'
 import { useMe } from '@/store/me'
 import { UpdateUser } from '@/lib/apis'
 import { showErrorMessage } from '@/util/showErrorMessage'
+import { getRules } from '@/util/validate'
 
 const meStore = useMe()
+
+const formRef = ref<FormInstance>()
+const rules = reactive(getRules(['userName', 'password']))
+const isFormValid = ref(false)
+watchEffect(() => {
+  const { value } = formRef
+  if (!value) {
+    isFormValid.value = false
+    return
+  }
+
+  if (inputData.password.length === 0) {
+    isFormValid.value = false
+    return
+  }
+
+  value.validate(isValid =>
+    isValid ? (isFormValid.value = true) : (isFormValid.value = false)
+  )
+})
 
 const inputData = reactive<Omit<UpdateUser, 'newPassword'>>({
   userName: meStore.getMe?.userName ?? '',
@@ -14,7 +35,6 @@ const inputData = reactive<Omit<UpdateUser, 'newPassword'>>({
 })
 
 const loading = ref(false)
-
 const confirmUpdate = async () => {
   try {
     loading.value = true
@@ -37,7 +57,12 @@ const confirmUpdate = async () => {
 
 <template>
   <div class="change-user-name-container">
-    <el-form :model="inputData" label-position="top">
+    <el-form
+      ref="formRef"
+      :model="inputData"
+      :rules="rules"
+      label-position="top"
+    >
       <el-form-item prop="userName" label="ユーザー名">
         <el-input v-model="inputData.userName" />
       </el-form-item>
@@ -46,7 +71,12 @@ const confirmUpdate = async () => {
       </el-form-item>
     </el-form>
 
-    <el-button type="primary" :loading="loading" @click="confirmUpdate">
+    <el-button
+      type="primary"
+      :loading="loading"
+      :disabled="!isFormValid"
+      @click="confirmUpdate"
+    >
       更新
     </el-button>
   </div>

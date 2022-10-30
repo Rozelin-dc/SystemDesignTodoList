@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
-import { PropType, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { PropType, reactive, ref, watchEffect } from 'vue'
+import { ElMessage, FormInstance } from 'element-plus'
 import { TaskStatus } from '@/types/taskStatus'
 import { useTask } from '@/store/task'
 import { Task, UpdateTask } from '@/lib/apis'
 import { showErrorMessage } from '@/util/showErrorMessage'
+import { getRules } from '@/util/validate'
 
 const props = defineProps({
   modelValue: {
@@ -23,6 +24,26 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['update:modelValue'])
+
+const formRef = ref<FormInstance>()
+const rules = reactive(getRules(['taskName']))
+const isFormValid = ref(false)
+watchEffect(() => {
+  const { value } = formRef
+  if (!value) {
+    isFormValid.value = false
+    return
+  }
+
+  if (editTask.taskName.length === 0) {
+    isFormValid.value = false
+    return
+  }
+
+  value.validate(isValid =>
+    isValid ? (isFormValid.value = true) : (isFormValid.value = false)
+  )
+})
 
 const editTask = reactive<UpdateTask>({
   taskName: props.task.taskName,
@@ -55,7 +76,12 @@ const confirmEdit = async () => {
     title="タスク編集"
     @close="$emit('update:modelValue', false)"
   >
-    <el-form :model="editTask" label-position="top">
+    <el-form
+      ref="formRef"
+      :model="editTask"
+      :rules="rules"
+      label-position="top"
+    >
       <el-form-item prop="taskName" label="タスク名">
         <el-input v-model="editTask.taskName" />
       </el-form-item>
@@ -75,7 +101,12 @@ const confirmEdit = async () => {
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button type="primary" :loading="loading" @click="confirmEdit">
+      <el-button
+        type="primary"
+        :loading="loading"
+        :disabled="!isFormValid"
+        @click="confirmEdit"
+      >
         確定
       </el-button>
     </template>
