@@ -19,3 +19,19 @@ $ npm run mock
 ```bash
 $ npm run dev
 ```
+
+## ディレクトリ構成
+```txt
+client
+├── public: ロゴ置き場
+├── scripts: コードを自動生成する為のコード
+├── src: 実装部分のコード置き場
+│   ├── layout: レイアウトの実装
+│   ├── lib/api: apiを叩くためのコード。generatedに自動生成コードが入る
+│   ├── pages: 各ページの実装
+│   ├── router: ルーティングの設定
+│   ├── store: storeの設定
+│   ├── types: 型の定義
+│   └── util: その他必要なロジックの実装
+└── README.md: このファイル
+```
