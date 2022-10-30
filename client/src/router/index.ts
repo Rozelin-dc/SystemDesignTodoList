@@ -68,6 +68,11 @@ const publicRoutes: IRouteRecordRaw[] = [
     path: '/create-account',
     name: 'CreateAccount',
     component: () => import('@/pages/CreateAccount/index.vue')
+  },
+  {
+    path: '/:pathMatch(.*)',
+    name: 'NotFound',
+    component: () => import('@/pages/404/index.vue')
   }
 ].map((route: IRouteRecordRaw) => {
   return {
