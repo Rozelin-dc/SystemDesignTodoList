@@ -98,7 +98,7 @@ const login = async () => {
 
 <style lang="scss" scoped>
 .change-user-name-container {
-  width: 500px;
+  width: 600px;
   margin: 0 auto;
   padding-top: 20vh;
 
