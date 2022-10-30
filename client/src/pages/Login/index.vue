@@ -37,6 +37,10 @@ const inputData = reactive<UserSimple>({
 const loading = ref(false)
 const router = useRouter()
 const login = async () => {
+  if (!isFormValid.value) {
+    return
+  }
+
   try {
     loading.value = true
     await meStore.login(inputData)
@@ -67,7 +71,12 @@ const login = async () => {
         <el-input v-model="inputData.userName" />
       </el-form-item>
       <el-form-item prop="password" label="パスワード">
-        <el-input v-model="inputData.password" type="password" show-password />
+        <el-input
+          v-model="inputData.password"
+          type="password"
+          show-password
+          @keyup.enter="login"
+        />
       </el-form-item>
     </el-form>
 

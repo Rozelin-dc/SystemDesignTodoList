@@ -38,6 +38,10 @@ const inputData = reactive<UserSimple>({
 const loading = ref(false)
 const router = useRouter()
 const confirmCreate = async () => {
+  if (!isFormValid.value) {
+    return
+  }
+
   try {
     loading.value = true
     await meStore.createMe(inputData)
@@ -68,7 +72,12 @@ const confirmCreate = async () => {
         <el-input v-model="inputData.userName" />
       </el-form-item>
       <el-form-item prop="password" label="パスワード">
-        <el-input v-model="inputData.password" type="password" show-password />
+        <el-input
+          v-model="inputData.password"
+          type="password"
+          show-password
+          @keyup.enter="confirmCreate"
+        />
       </el-form-item>
     </el-form>
 

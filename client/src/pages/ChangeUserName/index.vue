@@ -36,6 +36,10 @@ const inputData = reactive<Omit<UpdateUser, 'newPassword'>>({
 
 const loading = ref(false)
 const confirmUpdate = async () => {
+  if (!isFormValid.value) {
+    return
+  }
+
   try {
     loading.value = true
     await meStore.changeMeData({
@@ -67,7 +71,12 @@ const confirmUpdate = async () => {
         <el-input v-model="inputData.userName" />
       </el-form-item>
       <el-form-item prop="password" label="パスワードを入力して更新">
-        <el-input v-model="inputData.password" type="password" show-password />
+        <el-input
+          v-model="inputData.password"
+          type="password"
+          show-password
+          @keyup.enter="confirmUpdate"
+        />
       </el-form-item>
     </el-form>
 
