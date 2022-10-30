@@ -5,7 +5,7 @@
 $ docker-compose up --build
 ```
 
-localhost:3050 にアクセス
+[localhost:3050](http://localhost:3050)にアクセス
 
 ## ディレクトリ構成
 ```txt
