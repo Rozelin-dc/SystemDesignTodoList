@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
 import { PropType, reactive, ref, watchEffect } from 'vue'
-import { ElMessage, FormInstance } from 'element-plus'
+import { ElMessage, ElMessageBox, FormInstance } from 'element-plus'
 import { TaskStatus } from '@/types/taskStatus'
 import { useTask } from '@/store/task'
 import { Task, UpdateTask } from '@/lib/apis'
@@ -68,6 +68,37 @@ const confirmEdit = async () => {
     loading.value = false
   }
 }
+
+const confirmDelete = async () => {
+  await ElMessageBox.confirm(
+    `タスク: ${props.task.taskName}を削除しますか`,
+    '確認',
+    {
+      confirmButtonText: 'はい',
+      cancelButtonText: 'いいえ',
+      type: 'warning'
+    }
+  )
+    .then(() => deleteTask())
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    .catch(() => {})
+}
+const deleteTask = async () => {
+  try {
+    loading.value = true
+    await taskStore.deleteTask(props.index, props.task.taskId)
+    ElMessage({
+      message: 'タスクを削除しました',
+      type: 'success'
+    })
+    emits('update:modelValue', false)
+  } catch (e: any) {
+    const err: AxiosError = e
+    showErrorMessage(err)
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -101,13 +132,16 @@ const confirmEdit = async () => {
       </el-form-item>
     </el-form>
     <template #footer>
+      <el-button type="danger" :loading="loading" @click="confirmDelete">
+        削除
+      </el-button>
       <el-button
         type="primary"
         :loading="loading"
         :disabled="!isFormValid"
         @click="confirmEdit"
       >
-        確定
+        編集
       </el-button>
     </template>
   </el-dialog>
