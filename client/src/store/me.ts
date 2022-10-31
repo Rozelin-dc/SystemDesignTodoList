@@ -30,7 +30,7 @@ export const useMe = defineStore('me', {
       if (!this.me) {
         throw new Error('not logged in')
       }
-      await api.deleteUser(this.me.userId, pass)
+      await api.deleteUser(this.me.userId, { password: pass })
       this.me = undefined
     },
     async createMe(userData: UserSimple) {

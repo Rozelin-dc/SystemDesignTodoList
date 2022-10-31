@@ -68,12 +68,17 @@ func (h *Handler) PatchUser(c echo.Context) error {
 
 func (h *Handler) DeleteUser(c echo.Context) error {
 	uid := c.Param("uid")
-	pass := c.QueryParam("password")
-	if pass == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "`password` is required")
+
+	type Password struct {
+		Password string `json:"password" validate:"password"`
+	}
+	pass := &Password{}
+	err := validatedBind(c, pass)
+	if err != nil {
+		return err
 	}
 
-	err := h.ui.DeleteUser(uid, pass)
+	err = h.ui.DeleteUser(uid, pass.Password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

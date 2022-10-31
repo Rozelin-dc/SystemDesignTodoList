@@ -94,12 +94,17 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: password
-          in: query
-          required: true
-          description: パスワード
-          schema:
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "******"
+              required:
+                - password
       responses:
         '200':
           description: アカウント削除に成功しました
