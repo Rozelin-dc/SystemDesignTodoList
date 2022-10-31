@@ -1,5 +1,6 @@
 import validator from 'validator'
-import { RuleItem, Rules } from 'async-validator'
+import { RuleItem } from 'async-validator'
+import { FormRules } from 'element-plus'
 
 export type InputField = 'password' | 'newPassword' | 'userName' | 'taskName'
 
@@ -36,7 +37,7 @@ const getValidator = (label: InputField): RuleItem['validator'] => {
   }
 }
 
-export const getRules = (inputFields: InputField[]): Rules =>
+export const getRules = (inputFields: InputField[]): FormRules =>
   Object.fromEntries(
     inputFields.map(item => [
       item,

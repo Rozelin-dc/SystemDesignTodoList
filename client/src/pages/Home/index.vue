@@ -6,6 +6,7 @@ import { useTask } from '@/store/task'
 import { showErrorMessage } from '@/util/showErrorMessage'
 import TaskComponent from './components/Task.vue'
 import NewTaskDialog from './components/NewTaskDialog.vue'
+import TaskFilter from './components/TaskFilter.vue'
 
 const showCreateDialog = ref(false)
 
@@ -54,10 +55,12 @@ onMounted(async () => {
 <template>
   <div class="task-list-container">
     <div class="create-task-button">
-      <el-button type="primary" @click="showCreateDialog = true">
+      <el-button type="success" @click="showCreateDialog = true">
         タスク作成
       </el-button>
     </div>
+
+    <task-filter />
 
     <div class="task-table task-table-header">
       <span>タスク名</span>
@@ -84,7 +87,7 @@ onMounted(async () => {
 
   .create-task-button {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     margin-bottom: 10px;
   }
 

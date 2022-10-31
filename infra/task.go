@@ -3,6 +3,7 @@ package infra
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
@@ -18,11 +19,23 @@ func NewTaskInfra(db *sqlx.DB) repository.TaskRepository {
 	return &taskInfra{db: db}
 }
 
-func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset int) (*model.TaskList, error) {
+func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset int, status string, name string) (*model.TaskList, error) {
+	query := "SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ?"
+
+	if status != "" {
+		query = fmt.Sprintf("%s AND `status` = %s", query, status)
+	}
+
+	if name != "" {
+		query = fmt.Sprintf("%s AND `task_name` LIKE '%%%s%%'", query, name)
+	}
+
+	query = fmt.Sprintf("%s ORDER BY `created_at` DESC LIMIT ? OFFSET ?", query)
+
 	tasks := []*model.TaskSimple{}
 	err := ti.db.Select(
 		&tasks,
-		"SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?",
+		query,
 		creatorId,
 		limit,
 		offset,

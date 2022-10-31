@@ -53,7 +53,10 @@ func (h *Handler) GetTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	tasks, err := h.ti.GetAllTasksByCreatorId(sess.UserId, limit, offset)
+	status := c.QueryParam("status")
+	name := c.QueryParam("name")
+
+	tasks, err := h.ti.GetAllTasksByCreatorId(sess.UserId, limit, offset, status, name)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

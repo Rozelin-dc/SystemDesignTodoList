@@ -14,6 +14,7 @@ paths:
       summary: ログイン
       operationId: postLogin
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -41,6 +42,7 @@ paths:
       summary: アカウント作成
       operationId: postUser
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -68,6 +70,7 @@ paths:
             type: string
             format: uuid
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -95,6 +98,7 @@ paths:
             type: string
             format: uuid
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -144,6 +148,18 @@ paths:
           schema:
             type: integer
             default: 0
+        - name: status
+          in: query
+          description: 完了済みまたは未完のタスクのみを取得する
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+        - name: name
+          in: query
+          description: タスクの名前で検索
+          schema:
+            type: string
       responses:
         '200':
           description: 取得できたタスク
@@ -157,6 +173,7 @@ paths:
       summary: タスク作成
       operationId: createTask
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -184,6 +201,7 @@ paths:
             type: string
             format: uuid
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -297,8 +315,10 @@ components:
           type: string
           example: sampleTaskName
         status:
-          type: number
+          type: integer
           example: 1
+          minimum: 0
+          maximum: 1
         timeLimit:
           type: string
           example: 2020/01/01
@@ -316,8 +336,10 @@ components:
           type: string
           example: sampleTaskName
         status:
-          type: number
+          type: integer
           example: 1
+          minimum: 0
+          maximum: 1
         timeLimit:
           type: string
           example: 2020/01/01
