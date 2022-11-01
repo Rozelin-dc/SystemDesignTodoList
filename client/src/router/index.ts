@@ -5,6 +5,7 @@ import {
   RouteLocation,
   RouteRecordRaw
 } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import Layout from '@/layout/index.vue'
 import { useMe } from '@/store/me'
 import { showErrorMessage } from '@/util/showErrorMessage'
@@ -87,22 +88,58 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to: IRoute, _, next) => {
+  const meStore = useMe()
+
   if (to.meta && to.meta.isPublic) {
-    next()
+    if (meStore.getMe) {
+      ElMessage({
+        message: 'ログイン済みです',
+        type: 'info'
+      })
+      next({ name: 'Home' })
+      return
+    } else {
+      try {
+        await meStore.setMe()
+        ElMessage({
+          message: 'ログイン済みです',
+          type: 'info'
+        })
+        next({ name: 'Home' })
+        return
+      } catch (e: any) {
+        const err: AxiosError = e
+        if (err.response && err.response.status === 401) {
+          next()
+        } else {
+          showErrorMessage(err)
+        }
+        return
+      }
+    }
   }
 
-  const meStore = useMe()
   if (meStore.getMe) {
     next()
+    return
   }
 
   try {
     await meStore.setMe()
     next()
+    return
   } catch (e: any) {
     const err: AxiosError = e
-    showErrorMessage(err)
+    if (err.response && err.response.status === 401) {
+      ElMessage({
+        message: '未ログインでした',
+        type: 'error'
+      })
+    } else {
+      showErrorMessage(err)
+    }
     next({ name: 'Login' })
+    return
   }
 })
 
