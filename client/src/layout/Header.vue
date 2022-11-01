@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { AxiosError } from 'axios'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { useMe } from '@/store/me'
 import { showErrorMessage } from '@/util/showErrorMessage'
 
@@ -11,6 +12,10 @@ const meStore = useMe()
 const doLogout = async () => {
   try {
     await meStore.logout()
+    ElMessage({
+      message: 'ログアウトしました',
+      type: 'info'
+    })
     router.push({ name: 'Login' })
   } catch (e: any) {
     const err: AxiosError = e
