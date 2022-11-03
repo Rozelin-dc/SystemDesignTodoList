@@ -13,6 +13,7 @@ func EnsureAuthorized(h *handler.Handler) echo.MiddlewareFunc {
 			path := c.Path()
 			method := c.Request().Method
 			if path == "/api/user" && method == "POST" {
+				// アカウント作成は未ログイン状態で行われるので通す
 				return next(c)
 			}
 

@@ -91,7 +91,9 @@ router.beforeEach(async (to: IRoute, _, next) => {
   const meStore = useMe()
 
   if (to.meta && to.meta.isPublic) {
+    // 行き先が未ログインユーザー向けページの場合
     if (meStore.getMe) {
+      // ログイン済みの場合、トップページへリダイレクト
       ElMessage({
         message: 'ログイン済みです',
         type: 'info'
@@ -110,6 +112,7 @@ router.beforeEach(async (to: IRoute, _, next) => {
       } catch (e: any) {
         const err: AxiosError = e
         if (err.response && err.response.status === 401) {
+          // 未ログインの場合のエラーは無視
           next()
         } else {
           showErrorMessage(err)

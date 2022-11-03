@@ -22,11 +22,11 @@ func NewTaskInfra(db *sqlx.DB) repository.TaskRepository {
 func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset int, status string, name string) (*model.TaskList, error) {
 	query := "SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ?"
 
-	if status != "" {
+	if status != "" { // 状態による検索条件が指定されていた場合
 		query = fmt.Sprintf("%s AND `status` = %s", query, status)
 	}
 
-	if name != "" {
+	if name != "" { // 名前による検索条件が指定されていた場合
 		query = fmt.Sprintf("%s AND `task_name` LIKE '%%%s%%'", query, name)
 	}
 

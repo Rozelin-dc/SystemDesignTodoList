@@ -8,12 +8,12 @@ import (
 )
 
 func validatedBind(c echo.Context, i interface{}) error {
-	err := c.Bind(i)
+	err := c.Bind(i) // リクエストボディの取り出し
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	err = c.Validate(i)
+	err = c.Validate(i) // バリデーションの実施
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
