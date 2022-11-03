@@ -33,12 +33,12 @@ func (h *Handler) PostLogin(c echo.Context) error {
 func (h *Handler) PostLogout(c echo.Context) error {
 	cookie, err := c.Cookie("session_id")
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	err = h.si.DeleteSessionBySessionId(cookie.Value)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.NoContent(http.StatusOK)
