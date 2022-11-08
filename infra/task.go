@@ -3,7 +3,6 @@ package infra
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/model"
 	"github.com/Rozelin-dc/SystemDesignTodoList/domain/repository"
@@ -21,24 +20,28 @@ func NewTaskInfra(db *sqlx.DB) repository.TaskRepository {
 
 func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset int, status string, name string) (*model.TaskList, error) {
 	query := "SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ?"
+	bind := []interface{}{
+		creatorId,
+	}
 
 	if status != "" { // 状態による検索条件が指定されていた場合
-		query = fmt.Sprintf("%s AND `status` = %s", query, status)
+		query = query + " AND `status` = ?"
+		bind = append(bind, status)
 	}
 
 	if name != "" { // 名前による検索条件が指定されていた場合
-		query = fmt.Sprintf("%s AND `task_name` LIKE '%%%s%%'", query, name)
+		query = query + " AND `task_name` LIKE ?"
+		bind = append(bind, "%"+name+"%")
 	}
 
-	query = fmt.Sprintf("%s ORDER BY `created_at` DESC LIMIT ? OFFSET ?", query)
+	query = query + " ORDER BY `created_at` DESC LIMIT ? OFFSET ?"
+	bind = append(bind, limit, offset)
 
 	tasks := []*model.TaskSimple{}
 	err := ti.db.Select(
 		&tasks,
 		query,
-		creatorId,
-		limit,
-		offset,
+		bind...,
 	)
 	if err != nil {
 		return nil, err
@@ -46,7 +49,7 @@ func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset 
 	if len(tasks) == 0 {
 		return &model.TaskList{
 			HasNext: false,
-			Tasks:   nil,
+			Tasks:   &tasks,
 		}, nil
 	}
 
