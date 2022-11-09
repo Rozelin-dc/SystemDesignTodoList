@@ -4,6 +4,7 @@ import { PropType, ref } from 'vue'
 import { Task } from '@/lib/apis'
 import { TaskStatus } from '@/types/taskStatus'
 import { useTask } from '@/store/task'
+import { formatDate } from '@/util/formatDatetime'
 import { showErrorMessage } from '@/util/showErrorMessage'
 import EditTaskDialog from './EditTaskDialog.vue'
 
@@ -54,6 +55,7 @@ const taskDelete = async () => {
 <template>
   <div class="task-table">
     <span>{{ task.taskName }}</span>
+    <span>{{ formatDate(task.createdAt) }}</span>
     <span>{{ task.timeLimit ?? 'なし' }}</span>
     <span>{{ task.status === TaskStatus.COMPLETE ? '完了済み' : '未完' }}</span>
     <span class="buttons">

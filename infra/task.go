@@ -19,7 +19,7 @@ func NewTaskInfra(db *sqlx.DB) repository.TaskRepository {
 }
 
 func (ti *taskInfra) GetAllTasksByCreatorId(creatorId string, limit int, offset int, status string, name string) (*model.TaskList, error) {
-	query := "SELECT `task_id`, `task_name`, `status`, `time_limit` FROM `tasks` WHERE `creator_id` = ?"
+	query := "SELECT `task_id`, `task_name`, `status`, `time_limit`, `created_at` FROM `tasks` WHERE `creator_id` = ?"
 	bind := []interface{}{
 		creatorId,
 	}
@@ -118,12 +118,17 @@ func (ti *taskInfra) CreateTask(creatorId string, task *model.NewTask) (*model.T
 		}
 	}
 
-	return &model.TaskSimple{
-		TaskId:    uuidStr,
-		TaskName:  task.TaskName,
-		Status:    0,
-		TimeLimit: task.TimeLimit,
-	}, nil
+	t := model.TaskSimple{}
+	err = ti.db.Get(
+		&t,
+		"SELECT `task_id`, `task_name`, `status`, `time_limit`, `created_at` FROM `tasks` WHERE `task_id` = ?",
+		uuidStr,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &t, nil
 }
 
 func (ti *taskInfra) EditTask(taskId string, task *model.TaskUpdate) (*model.TaskSimple, error) {
@@ -150,12 +155,17 @@ func (ti *taskInfra) EditTask(taskId string, task *model.TaskUpdate) (*model.Tas
 		}
 	}
 
-	return &model.TaskSimple{
-		TaskId:    taskId,
-		TaskName:  task.TaskName,
-		Status:    task.Status,
-		TimeLimit: task.TimeLimit,
-	}, nil
+	t := model.TaskSimple{}
+	err := ti.db.Get(
+		&t,
+		"SELECT `task_id`, `task_name`, `status`, `time_limit`, `created_at` FROM `tasks` WHERE `task_id` = ?",
+		taskId,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &t, nil
 }
 
 func (ti *taskInfra) DeleteTaskByTaskId(taskId string, userId string) error {

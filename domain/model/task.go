@@ -3,10 +3,11 @@ package model
 import "time"
 
 type TaskSimple struct {
-	TaskId    string  `json:"taskId" db:"task_id"`
-	TaskName  string  `json:"taskName" db:"task_name" validate:"taskName"`
-	Status    int     `json:"status" db:"status" validate:"status"`
-	TimeLimit *string `json:"timeLimit" db:"time_limit" validate:"omitempty,timeLimit"`
+	TaskId    string    `json:"taskId" db:"task_id"`
+	TaskName  string    `json:"taskName" db:"task_name" validate:"taskName"`
+	Status    int       `json:"status" db:"status" validate:"status"`
+	TimeLimit *string   `json:"timeLimit" db:"time_limit" validate:"omitempty,timeLimit"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
 
 type TaskList struct {
@@ -29,6 +30,5 @@ type Task struct {
 	TaskSimple
 
 	CreatorId string    `db:"creator_id"`
-	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }

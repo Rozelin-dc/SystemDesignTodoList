@@ -343,10 +343,14 @@ components:
         timeLimit:
           type: string
           example: 2020/01/01
+        createdAt:
+          type: string
+          format: date-time
       required:
         - taskId
         - taskName
         - status
+        - createdAt
 
     TaskList:
       type: object

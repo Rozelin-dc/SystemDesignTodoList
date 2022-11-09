@@ -1,5 +1,6 @@
 .task-table {
   display: grid;
-  grid-template-columns: 1fr 100px 70px 180px;
+  // 名前, 作成日時, 期限, 状態, ボタン
+  grid-template-columns: 1fr 150px 90px 70px 180px;
   align-items: center;
 }

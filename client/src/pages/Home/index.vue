@@ -64,6 +64,7 @@ onMounted(async () => {
 
     <div class="task-table task-table-header">
       <span>タスク名</span>
+      <span>作成日時</span>
       <span>期限</span>
       <span>状態</span>
     </div>
